@@ -1,0 +1,7 @@
+
+<div [ngClass]="{'grey': player.id%2 === 0 }">
+    <h4>Player {{player.id}}</h4>
+    <app-class-list
+    (selectionOutput)="inputPlayerSelection($event)"
+    ></app-class-list>
+</div>
