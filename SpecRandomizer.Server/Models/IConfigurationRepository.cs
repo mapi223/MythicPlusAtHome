@@ -3,7 +3,7 @@
     public interface IConfigurationRepository
     {
         IEnumerable<Configuration> AllConfigurations { get; }
-        IEnumerable<Configuration>? getAllWithUserId(int userId);
-        Configuration? GetConfigurationWithIdAndUserID(int configurationId, int userId);
+        IEnumerable<Configuration>? getAllWithUserId(int UserId);
+        Configuration? GetConfigurationWithIdAndUserID(int ConfigurationId, int UserId);
     }
 }

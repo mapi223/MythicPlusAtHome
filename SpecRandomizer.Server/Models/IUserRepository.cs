@@ -2,6 +2,6 @@
 {
     public interface IUserRepository
     {
-        string getPassword(int userId);
+        string getPassword(int UserId);
     }
 }

@@ -2,10 +2,11 @@
 {
     public class Player
     {
-        private int playerId { get; set; }
-        private int numSpecs { get; set; }
-        private SpecList[] specList { get; set; }
-        private string PlayerName { get; set; }
+        public int PlayerId { get; set; }
+        public int ConfigurationId { get; set; }
+        public SpecList[] SpecList { get; set; }
+        public string PlayerName { get; set; }
+        public virtual Configuration Configuration { get; }
 
     }
 }

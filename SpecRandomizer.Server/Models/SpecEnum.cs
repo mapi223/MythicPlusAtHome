@@ -1,6 +1,6 @@
 ﻿namespace SpecRandomizer.Server.Model
 {
-   enum SpecList
+   public enum SpecList
     {
         DEATH_KNIGHT,
         DEMON_HUNTER,
@@ -14,6 +14,7 @@
         ROGUE,
         SHAMAN,
         WARLOCK,
-        WARRIOR
+        WARRIOR,
+        NONE
     }
 }
