@@ -16,6 +16,15 @@ export class PlayerListComponent {
       this.players++;
     }
   }
+  removePlayer() {
+    if (this.players > 0) {
+      this.players--;
+    }
+  }
+
+  onSubmit(){
+
+  }
 
   get playersArray() {
     return Array(this.players).fill(0);
@@ -25,5 +34,6 @@ export class PlayerListComponent {
     this.playerList.push(eventList);
     console.log(this.playerList);
   }
+
 
 }

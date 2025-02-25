@@ -2,9 +2,10 @@
 {
     public class Player
     {
-        private int numSpecs;
-        private SpecList[] specList;
-        private string PlayerName;
+        private int playerId { get; set; }
+        private int numSpecs { get; set; }
+        private SpecList[] specList { get; set; }
+        private string PlayerName { get; set; }
 
     }
 }
