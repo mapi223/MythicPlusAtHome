@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { ClassListComponent } from './class-list/class-list.component';
 import { PlayerListComponent } from './player-list/player-list.component';
 import { PlayerComponent } from './player/player.component';
+import { SpecRouletteHeaderComponent } from './spec-roulette-header/spec-roulette-header.component';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { PlayerComponent } from './player/player.component';
     AppComponent,
     ClassListComponent,
     PlayerListComponent,
-    PlayerComponent
+    PlayerComponent,
+    SpecRouletteHeaderComponent
   ],
   imports: [
     BrowserModule,
