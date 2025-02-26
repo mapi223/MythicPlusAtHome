@@ -11,17 +11,20 @@ namespace SpecRandomizer.Server.Models
             _specRandomizerDbContext = specRandomizerDbContext;
         }
 
-        IEnumerable<Configuration> AllConfigurations {
+        public IEnumerable<Configuration> AllConfigurations {
             get
             {
                 return _specRandomizerDbContext.Configurations;
             }
            }
-        IEnumerable<Configuration>? getAllWithUserId(int UserId)
+        public IEnumerable<Configuration>? getAllWithUserId(int UserId)
         {
-            return _specRandomizerDbContext.Configurations.f;
+            return _specRandomizerDbContext.Configurations.Where(u => u.UserId == UserId).ToList();
         }
-        Configuration? GetConfigurationWithIdAndUserID(int ConfigurationId, int UserId);
+        public Configuration? GetConfigurationWithIdAndUserID(int ConfigurationId, int UserId)
+        {
+            return _specRandomizerDbContext.Configurations.First(Configuration => Configuration.UserId == UserId && Configuration.ConfigurationId == ConfigurationId);
+        }
     }
 }
-}
+
