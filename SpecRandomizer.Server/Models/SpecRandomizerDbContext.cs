@@ -5,8 +5,9 @@ namespace SpecRandomizer.Server.Models
 {
     public class SpecRandomizerDbContext: DbContext
     {
-        public SpecRandomizerDbContext(DbContextOptions options) : base(options)
+        public SpecRandomizerDbContext(DbContextOptions<SpecRandomizerDbContext> options) : base(options)
         {
+            
         }
 
         public DbSet<User> Users { get; set; }

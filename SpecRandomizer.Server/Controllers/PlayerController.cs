@@ -13,8 +13,8 @@ namespace SpecRandomizer.Server.Controllers
         _playerRepository = playerRepository;
         }
         
-       // public IActionResult List()
-       // {
+      // public IActionResult List()
+      // {
        //     return(_playerRepository.GetSpecList())
        // }
     }

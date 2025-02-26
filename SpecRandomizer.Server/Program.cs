@@ -7,8 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<SpecRandomizerDbContext>(options => {
-    options.UseSqlServer(
-        builder.Configuration["ConnectionStrings:SpecRandomizerDbContextConnection"]);
+    options.UseSqlServer
+    (@"Server=(localdb)\\mssqllocaldb;Database=SpecRandomizerServerContext-ac424fb8-a6f5-4d23-9e29-a0d4ba549bbb;Trusted_Connection=True;MultipleActiveResultSets=true");
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
