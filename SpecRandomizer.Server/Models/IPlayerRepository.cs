@@ -4,7 +4,7 @@ namespace SpecRandomizer.Server.Models
 {
     public interface IPlayerRepository
     {
-        IEnumerable<SpecList> GetSpecList(int PlayerId);
+        IEnumerable<ClassList> GetSpecList(int PlayerId);
 
 
     }

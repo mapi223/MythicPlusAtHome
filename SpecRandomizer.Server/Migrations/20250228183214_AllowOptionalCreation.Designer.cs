@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SpecRandomizer.Server.Models;
@@ -11,9 +12,11 @@ using SpecRandomizer.Server.Models;
 namespace SpecRandomizer.Server.Migrations
 {
     [DbContext(typeof(SpecRandomizerDbContext))]
-    partial class SpecRandomizerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250228183214_AllowOptionalCreation")]
+    partial class AllowOptionalCreation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,6 +34,7 @@ namespace SpecRandomizer.Server.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ConfigurationId"));
 
                     b.Property<int?>("UserId")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.HasKey("ConfigurationId");
@@ -47,6 +51,9 @@ namespace SpecRandomizer.Server.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PlayerId"));
+
+                    b.Property<int?>("ConfiguratioId")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("ConfigurationId")
                         .HasColumnType("integer");
@@ -92,7 +99,8 @@ namespace SpecRandomizer.Server.Migrations
                     b.HasOne("SpecRandomizer.Server.Model.User", "User")
                         .WithMany("Configurations")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -101,8 +109,7 @@ namespace SpecRandomizer.Server.Migrations
                 {
                     b.HasOne("SpecRandomizer.Server.Model.Configuration", "Configuration")
                         .WithMany("Players")
-                        .HasForeignKey("ConfigurationId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ConfigurationId");
 
                     b.Navigation("Configuration");
                 });

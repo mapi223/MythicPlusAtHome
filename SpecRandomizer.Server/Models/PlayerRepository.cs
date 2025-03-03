@@ -11,7 +11,7 @@ namespace SpecRandomizer.Server.Models
             _specRandomizerDbContext = specRandomizerDbContext;
         }
 
-        public IEnumerable<SpecList> GetSpecList(int playerId)
+        public IEnumerable<ClassList> GetSpecList(int playerId)
         {
             Player player = _specRandomizerDbContext.Players.FirstOrDefault(p => p.PlayerId == playerId);
             if (player != null)
@@ -19,7 +19,7 @@ namespace SpecRandomizer.Server.Models
                 return player.SpecList;
             }
             else
-                return [SpecList.NONE];
+                return [ClassList.NONE];
         }
     }
 }

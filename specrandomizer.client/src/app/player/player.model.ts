@@ -1,4 +1,5 @@
 export interface IPlayer {
-    id: number;
-    classIds: number[];
+  id: number;
+  SpecList: number[];
+  PlayerName: string;
 }
