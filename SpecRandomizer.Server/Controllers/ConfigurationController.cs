@@ -56,10 +56,10 @@ namespace SpecRandomizer.Server.Controllers
             return NoContent();
         }
 
-        [HttpGet("/group/{id}")]
-        public ActionResult<List<RoleAssignment>> GetGroupLayout(int id)
+        [HttpGet("/group/")]
+        public List<RoleAssignment> GetGroupLayout()
         {
-            var config = _configurationService.GetConfigurationByIdAsync(id).Result;
+            var config = _configurationService.GetConfigurationByNewestAsync().Result;
             if (config == null)
             {
                 return null;

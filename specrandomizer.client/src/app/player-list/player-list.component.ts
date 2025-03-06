@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IPlayer } from '../player/player.model';
 import { HttpClient } from '@angular/common/http';
+import { IConfiguration, IRoleAssignment } from './Configuration';
 
 @Component({
   selector: 'app-player-list',
@@ -9,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class PlayerListComponent {
 
+  RoleAssignments: any;
   players:number = 0;
   playerList: IPlayer[] = [];
   Configuration = {
@@ -31,10 +33,18 @@ export class PlayerListComponent {
 
   onSubmit() {
     console.log("submit hit");
-    this.http.post('https://localhost:7174/api/Configuration', this.Configuration, {
+    this.http.post<IConfiguration>('https://localhost:7174/api/Configuration', this.Configuration, {
       headers: { 'Content-Type': 'application/json' }
-    }).subscribe(() => {
+    }).subscribe((response) => {
+      response.configurationId;
       console.log("Configuration saved successfully!");
+      this.http.get<any>('https://localhost:7174/group/')
+        .subscribe((GetResponse) => {
+          this.RoleAssignments = GetResponse['$values'] || [];
+        },
+          error => {
+            console.log("Beep Boop: Get Error ", error);
+          });
     }, error => {
       console.error("Error occurred:", error);
     });

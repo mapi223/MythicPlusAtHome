@@ -10,4 +10,7 @@
       
     </div>
     <button type="button" *ngIf="players > 0" (click)="onSubmit()">Submit</button>
+    <app-group-configuration
+     [players]=this.RoleAssignments>
+    </app-group-configuration>
 </div>

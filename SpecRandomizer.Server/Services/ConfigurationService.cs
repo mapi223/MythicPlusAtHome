@@ -20,12 +20,22 @@ public class ConfigurationService
     {
         return await _context.Configurations
             .Where(c => c.UserId == UserId)
+            .Include(c => c.Players)
             .ToListAsync();
     }
 
     public async Task<Configuration?> GetConfigurationByIdAsync(int id)
     {
-        return await _context.Configurations.FindAsync(id);
+        return await _context.Configurations
+            .Include(c => c.Players)
+            .FirstOrDefaultAsync(c => c.ConfigurationId == id);
+    }
+    public async Task<Configuration?> GetConfigurationByNewestAsync()
+    {
+        return await _context.Configurations
+            .OrderByDescending(c => c.CreatedAt)
+            .Include(c => c.Players)
+            .FirstAsync();
     }
 
     // Add a new configuration while ensuring a max limit of 10 per UserId

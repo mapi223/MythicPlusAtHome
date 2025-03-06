@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SpecRandomizer.Server.Models;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using SpecRandomizer.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,8 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
         options.JsonSerializerOptions.WriteIndented = true;
     });
+builder.Services.AddScoped<ConfigurationService>();
+builder.Services.AddScoped<GroupConfigurationService>();
 builder.Services.AddDbContext<SpecRandomizerDbContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("SpecRandomizerServerContext"));
 });
