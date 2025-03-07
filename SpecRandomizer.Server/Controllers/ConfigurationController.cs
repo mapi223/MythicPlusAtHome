@@ -57,9 +57,21 @@ namespace SpecRandomizer.Server.Controllers
         }
 
         [HttpGet("/group/")]
-        public List<RoleAssignment> GetGroupLayout()
+        public List<RoleAssignmentDto> GetGroupLayoutNewest()
         {
             var config = _configurationService.GetConfigurationByNewestAsync().Result;
+            if (config == null)
+            {
+                return null;
+            }
+            return _groupConfigurationService.GetRoleAssignments(config);
+
+        }
+
+        [HttpGet("/group/{id}")]
+        public List<RoleAssignmentDto> GetGroupLayoutById(int id)
+        {
+            var config = _configurationService.GetConfigurationByIdAsync(id).Result;
             if (config == null)
             {
                 return null;

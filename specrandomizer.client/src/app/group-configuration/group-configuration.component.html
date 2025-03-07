@@ -1,5 +1,6 @@
 <div class="AllThePeople">
-  <div *ngFor="let player of players; let i = index">
-    <p>{{players[i].Player.PlayerName}} is a {{players[i].Spec.SpecName}}</p>
-  </div>
+  
+  <span *ngFor="let player of players; let i = index; let last = last">
+    {{ i > 0 && last ? ', and ' : (i > 0 ? ', ' : '') }}{{players[i].playerName}} is a {{players[i].specName}}
+  </span>
 </div>

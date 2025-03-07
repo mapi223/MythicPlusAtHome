@@ -11,7 +11,9 @@ export class PlayerComponent {
 
   @Input() playerId!: number;
 
-  player:IPlayer = {id: 0, SpecList: [], PlayerName: ""};
+  player: IPlayer = { id: 0, SpecList: [], PlayerName: "" };
+
+  @Input() isLoading = false;
 
   @Output() sendPlayerDetails = new EventEmitter<IPlayer>();
 

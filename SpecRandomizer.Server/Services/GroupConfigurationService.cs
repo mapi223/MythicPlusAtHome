@@ -38,6 +38,20 @@ namespace SpecRandomizer.Server.Services
             return assignedRole;
         }
 
+        private List<RoleAssignmentDto> AsDto(List<RoleAssignment> assignments)
+        {
+            List<RoleAssignmentDto> asDtoObjectList = [];
+            if (assignments.Count == 0) return asDtoObjectList;
+            asDtoObjectList = [.. assignments.Select(ra => new RoleAssignmentDto
+            {
+                PlayerId = ra.Player.PlayerId,
+                PlayerName = ra.Player.PlayerName,
+                SpecName = ra.AssignedSpec.Name,
+                ClassName = ra.AssignedSpec.Special
+            })];
+
+            return asDtoObjectList;
+        }
         private Specialization AssignSpecialization(List<ClassList> availableClasses, Role assignedRole)
         {
             var rng = new Random();
@@ -52,12 +66,12 @@ namespace SpecRandomizer.Server.Services
             return possibleSpecs.Count > 0 ? possibleSpecs[rng.Next(possibleSpecs.Count)] : ClassMappings.Specializations[(ClassList.NONE, Role.INVALID)].First();
         }
 
-        public List<RoleAssignment> GetRoleAssignments(Configuration config)
+        public List<RoleAssignmentDto> GetRoleAssignments(Configuration config)
         {
             var assignments = new List<RoleAssignment>();
             var availablePlayers = new List<Player>(config.Players);
 
-            if (availablePlayers.Count == 0) return assignments;
+            if (availablePlayers.Count == 0) return AsDto(assignments);
 
             var rng = new Random();
             availablePlayers = [.. availablePlayers.OrderBy(_ => rng.Next())];
@@ -75,9 +89,9 @@ namespace SpecRandomizer.Server.Services
                 }
                 Role assignedRole = Role.INVALID;
                 double randomSelector = rng.NextDouble();
-                if (randomSelector < .33 || damageCount >= 3)
+                if (randomSelector < .3 || damageCount >= 3)
                 {
-                    if (possibleRoles.Contains(Role.TANK) && tankCount < 0)
+                    if (possibleRoles.Contains(Role.TANK) && tankCount < 1)
                     {
                         assignedRole = Role.TANK;
                     }
@@ -87,9 +101,9 @@ namespace SpecRandomizer.Server.Services
                     }
 
                 }
-                else if (randomSelector > .33 || damageCount >= 3)
+                else if (randomSelector > .5 || damageCount >= 3)
                 {
-                    if (possibleRoles.Contains(Role.HEALER) && tankCount < 0)
+                    if (possibleRoles.Contains(Role.HEALER) && healerCount < 1)
                     {
                         assignedRole = Role.HEALER;
                     }
@@ -121,7 +135,7 @@ namespace SpecRandomizer.Server.Services
             }
 
 
-            return assignments;
+            return AsDto(assignments);
         }
     }
 }

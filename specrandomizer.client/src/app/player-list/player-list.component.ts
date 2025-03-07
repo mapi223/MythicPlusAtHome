@@ -10,8 +10,10 @@ import { IConfiguration, IRoleAssignment } from './Configuration';
 })
 export class PlayerListComponent {
 
+  isLoading = false;
   RoleAssignments: any;
-  players:number = 0;
+  players: number = 0;
+  configId: number = 0;
   playerList: IPlayer[] = [];
   Configuration = {
     UserID: 1,
@@ -36,11 +38,13 @@ export class PlayerListComponent {
     this.http.post<IConfiguration>('https://localhost:7174/api/Configuration', this.Configuration, {
       headers: { 'Content-Type': 'application/json' }
     }).subscribe((response) => {
-      response.configurationId;
+      this.configId = response.configurationId;
+      this.isLoading = true;
       console.log("Configuration saved successfully!");
       this.http.get<any>('https://localhost:7174/group/')
         .subscribe((GetResponse) => {
           this.RoleAssignments = GetResponse['$values'] || [];
+          this.isLoading = false;
         },
           error => {
             console.log("Beep Boop: Get Error ", error);

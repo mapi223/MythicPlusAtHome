@@ -1,7 +1,9 @@
 
 <div [ngClass]="{'grey': player.id%2 === 0 }">
-    <h4>Player {{player.id}}</h4>
+  <label for="PlayerName">{{player.PlayerName}}</label>
+    <input type="text" id="PlayerName" [(ngModel)] ="player.PlayerName">
     <app-class-list
     (selectionOutput)="inputPlayerSelection($event)"
+    [isLoading]="isLoading"
     ></app-class-list>
 </div>

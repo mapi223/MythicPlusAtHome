@@ -1,14 +1,17 @@
 
 
-<div class="classes flex-container" >
-    <div *ngFor="let classDetails of classes" class="bubble-item">
-        <button type="button" 
-        [style.--custom-background-color]="classDetails.color" 
-        [style.--custom-color]="classDetails.font_color" 
-        [ngClass]="{'selected' : isSelectedArray(classDetails)}" 
-        (click)="onSelect(classDetails)">
-            <span >{{classDetails.className}}</span>
-        </button>
-    </div>
+<div class="classes flex-container">
+  <div *ngFor="let classDetails of classes; let i = index" class="bubble-item">
+    <button type="button"
+            [style.--custom-background-color]="classDetails.color"
+            [style.--custom-color]="classDetails.font_color"
+            [ngClass]="{'selected' : isSelectedArray(classDetails)}"
+            [ngClass]="{ 'hover-effect': activeIndex === i }"
+            (click)="onSelect(classDetails)">
+      <span>{{classDetails.className}}</span>
+    </button>
+  </div>
 </div>
+
+
 
