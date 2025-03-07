@@ -1,3 +1,4 @@
+
 export interface IClassDetails {
     id: number;
     className: string;

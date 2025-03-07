@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -8,6 +9,7 @@ import { ClassListComponent } from './class-list/class-list.component';
 import { PlayerListComponent } from './player-list/player-list.component';
 import { PlayerComponent } from './player/player.component';
 import { SpecRouletteHeaderComponent } from './spec-roulette-header/spec-roulette-header.component';
+import { GroupConfigurationComponent } from './group-configuration/group-configuration.component';
 import { ConfigurationListComponent } from './configuration-list/configuration-list.component';
 
 
@@ -18,10 +20,12 @@ import { ConfigurationListComponent } from './configuration-list/configuration-l
     PlayerListComponent,
     PlayerComponent,
     SpecRouletteHeaderComponent,
+    GroupConfigurationComponent,
     ConfigurationListComponent
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     FormsModule
   ],

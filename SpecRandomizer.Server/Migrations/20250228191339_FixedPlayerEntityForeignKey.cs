@@ -1,0 +1,28 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace SpecRandomizer.Server.Migrations
+{
+    /// <inheritdoc />
+    public partial class FixedPlayerEntityForeignKey : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropColumn(
+                name: "ConfiguratioId",
+                table: "Players");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AddColumn<int>(
+                name: "ConfiguratioId",
+                table: "Players",
+                type: "integer",
+                nullable: true);
+        }
+    }
+}

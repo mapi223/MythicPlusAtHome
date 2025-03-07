@@ -11,22 +11,23 @@ export class PlayerComponent {
 
   @Input() playerId!: number;
 
-  player:IPlayer = {id: 0, classIds: []};
+  player:IPlayer = {id: 0, SpecList: [], PlayerName: ""};
 
   @Output() sendPlayerDetails = new EventEmitter<IPlayer>();
 
   ngOnChanges(){
     if(this.playerId !== undefined){
       this.player.id = this.playerId;
+      this.player.PlayerName = "Player " + this.player.id;
     }
   }
 
   inputPlayerSelection(eventList:IClassDetails[]){
-    if (this.player && this.player.classIds) {
-      this.player.classIds = [];
+    if (this.player && this.player.SpecList) {
+      this.player.SpecList = [];
     }
     for (let index = 0; index < eventList.length; index++) {
-      this.player?.classIds.push(eventList[index].id);
+      this.player?.SpecList.push(eventList[index].id);
     }
     this.sendPlayerDetails.emit(this.player);
   }

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ClassListComponent } from './class-list.component';
 
+
 describe('ClassListComponent', () => {
   let component: ClassListComponent;
   let fixture: ComponentFixture<ClassListComponent>;

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { IPlayer } from '../player/player.model';
+import { HttpClient } from '@angular/common/http';
+import { IConfiguration, IRoleAssignment } from './Configuration';
 
 @Component({
   selector: 'app-player-list',
@@ -8,8 +10,15 @@ import { IPlayer } from '../player/player.model';
 })
 export class PlayerListComponent {
 
+  RoleAssignments: any;
   players:number = 0;
-  playerList:IPlayer[] = [];
+  playerList: IPlayer[] = [];
+  Configuration = {
+    UserID: 1,
+    players: this.playerList,
+  }
+
+  constructor(private http: HttpClient) { }
 
   addPlayer(){
     if(this.players<5){
@@ -22,16 +31,33 @@ export class PlayerListComponent {
     }
   }
 
-  onSubmit(){
-
+  onSubmit() {
+    console.log("submit hit");
+    this.http.post<IConfiguration>('https://localhost:7174/api/Configuration', this.Configuration, {
+      headers: { 'Content-Type': 'application/json' }
+    }).subscribe((response) => {
+      response.configurationId;
+      console.log("Configuration saved successfully!");
+      this.http.get<any>('https://localhost:7174/group/')
+        .subscribe((GetResponse) => {
+          this.RoleAssignments = GetResponse['$values'] || [];
+        },
+          error => {
+            console.log("Beep Boop: Get Error ", error);
+          });
+    }, error => {
+      console.error("Error occurred:", error);
+    });
   }
+  
 
   get playersArray() {
     return Array(this.players).fill(0);
   }
 
-  inputPlayerList(eventList:IPlayer){
-    this.playerList.push(eventList);
+  inputPlayerList(eventList: IPlayer) {
+
+    this.playerList[eventList.id -1] = eventList;
     console.log(this.playerList);
   }
 

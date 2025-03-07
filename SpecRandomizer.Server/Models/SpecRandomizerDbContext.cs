@@ -16,15 +16,18 @@ namespace SpecRandomizer.Server.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Configurations)
-                .WithOne(c => c.User)
-                .HasForeignKey(c => c.UserId);
-
             modelBuilder.Entity<Configuration>()
-                .HasMany(c => c.Players)
-                .WithOne(p => p.Configuration)
-                .HasForeignKey(p => p.ConfigurationId);
+                .HasOne(c => c.User)
+                .WithMany(u => u.Configurations)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Player>()
+                .HasOne(p => p.Configuration)
+                .WithMany(c => c.Players)
+                .HasForeignKey(p => p.ConfigurationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     } 
 }
