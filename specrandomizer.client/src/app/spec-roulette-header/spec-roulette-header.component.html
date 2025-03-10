@@ -1,6 +1,22 @@
-<header class = "header">
+<header class="header">
   <h1 (click)="goHome()" style="cursor: pointer;">
-  Spec Roulette
-</h1>
+    Spec Roulette
+  </h1>
   <button (click)="toggleMenu()" class="menu">☰</button>
+
+
+  <div class="dropdown-menu" [class.open]="isMenuOpen">
+    <form (submit)="login()">
+      <label>
+        Username:
+        <input type="text" [(ngModel)]="username" name="username" required />
+      </label>
+      <label>
+        Password:
+        <input type="password" [(ngModel)]="password" name="password" required />
+      </label>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
 </header>

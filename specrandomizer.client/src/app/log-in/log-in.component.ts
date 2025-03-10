@@ -1,10 +1,39 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthenticationService } from '../authentication.service';
 
 @Component({
   selector: 'app-log-in',
   templateUrl: './log-in.component.html',
   styleUrls: ['./log-in.component.css']
 })
-export class LogInComponent {
 
+export class LogInComponent {
+  isLogin: boolean = false;
+  isRegister: boolean = false;
+  username: string = "";
+  password: string = "";
+
+  
+  constructor(private authService: AuthenticationService, private router: Router) { }
+
+  login(): void {
+    this.authService.login(this.username, this.password).subscribe(() => {
+      this.router.navigate(['/roulette']);
+    });
+  }
+  Register(): void {
+    this.authService.register(this.username, this.password).subscribe(() => {
+      alert("Pleae log in with your as a new User")
+    });
+  }
+  setLogin() {
+    this.isLogin = true;
+    this.isRegister = false;
+  }
+
+  setRegister() {
+    this.isRegister = true;
+    this.isLogin = false;
+  }
 }

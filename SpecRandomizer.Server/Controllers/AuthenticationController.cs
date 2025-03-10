@@ -1,21 +1,26 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SpecRandomizer.Server.Model;
+using SpecRandomizer.Server.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
 namespace SpecRandomizer.Server.Controllers
 {
+    [Route("api/auth")]
+    [ApiController]
     public class AuthenticationController : ControllerBase
     {
         public static User user = new User();
         private readonly IConfiguration _configuration;
-
-        public AuthenticationController(IConfiguration configuration)
+        private readonly SpecRandomizerDbContext _context;
+        public AuthenticationController(IConfiguration configuration, SpecRandomizerDbContext context)
         {
             _configuration = configuration;
+            _context = context;
         }
 
 
@@ -26,6 +31,14 @@ namespace SpecRandomizer.Server.Controllers
             user.UserName = request.UserName;
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
+
+            bool userExists = await _context.Users.AnyAsync(u => u.UserName == user.UserName);
+            if(userExists)
+            {
+                return BadRequest("User Name Already Exists");
+            }
+
+            _context.Users.Add(user);
 
             return Ok(user);
         }
@@ -41,7 +54,7 @@ namespace SpecRandomizer.Server.Controllers
 
             string token = CreateToken(user);
 
-            return Ok(token);
+            return Ok(new { token });
         }
 
 

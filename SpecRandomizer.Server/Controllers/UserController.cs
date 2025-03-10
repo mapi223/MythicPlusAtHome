@@ -25,6 +25,11 @@ namespace SpecRandomizer.Server.Controllers
             {
                 return BadRequest("Invalid user data.");
             }
+            bool userExists = await _context.Users.AnyAsync(u => u.UserName == user.UserName);
+            if (userExists)
+            {
+                return BadRequest("User Already Exists");
+            }
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
