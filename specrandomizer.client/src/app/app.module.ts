@@ -11,6 +11,7 @@ import { PlayerComponent } from './player/player.component';
 import { SpecRouletteHeaderComponent } from './spec-roulette-header/spec-roulette-header.component';
 import { GroupConfigurationComponent } from './group-configuration/group-configuration.component';
 import { ConfigurationListComponent } from './configuration-list/configuration-list.component';
+import { LogInComponent } from './log-in/log-in.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { ConfigurationListComponent } from './configuration-list/configuration-l
     PlayerComponent,
     SpecRouletteHeaderComponent,
     GroupConfigurationComponent,
-    ConfigurationListComponent
+    ConfigurationListComponent,
+    LogInComponent
   ],
   imports: [
     BrowserModule,
