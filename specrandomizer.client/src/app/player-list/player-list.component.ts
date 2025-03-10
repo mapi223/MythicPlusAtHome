@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { IPlayer } from '../player/player.model';
 import { HttpClient } from '@angular/common/http';
 import { IConfiguration, IRoleAssignment } from './Configuration';
@@ -8,17 +8,27 @@ import { IConfiguration, IRoleAssignment } from './Configuration';
   templateUrl: './player-list.component.html',
   styleUrls: ['./player-list.component.css']
 })
-export class PlayerListComponent {
+export class PlayerListComponent implements OnInit {
 
   RoleAssignments: any;
-  players:number = 0;
+  players: number = 0;
+  userId = 1;
   playerList: IPlayer[] = [];
+  
   Configuration = {
-    UserID: 1,
+    UserID: this.userId, 
     players: this.playerList,
+  };
+
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) { }
+
+  ngOnInit() {
+    this.updateUserID(); // Set initial value
   }
 
-  constructor(private http: HttpClient) { }
+  updateUserID() {
+    this.userId = Number(localStorage.getItem('userId'));
+  }
 
   addPlayer(){
     if(this.players<5){
@@ -33,6 +43,7 @@ export class PlayerListComponent {
 
   onSubmit() {
     console.log("submit hit");
+    this.updateUserID();
     this.http.post<IConfiguration>('https://localhost:7174/api/Configuration', this.Configuration, {
       headers: { 'Content-Type': 'application/json' }
     }).subscribe((response) => {
@@ -40,7 +51,8 @@ export class PlayerListComponent {
       console.log("Configuration saved successfully!");
       this.http.get<any>('https://localhost:7174/group/')
         .subscribe((GetResponse) => {
-          this.RoleAssignments = GetResponse['$values'] || [];
+          console.log(GetResponse);
+          this.RoleAssignments = GetResponse?.$values || [];
         },
           error => {
             console.log("Beep Boop: Get Error ", error);

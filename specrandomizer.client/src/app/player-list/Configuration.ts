@@ -7,8 +7,9 @@ export interface IConfiguration {
   players: IPlayer[];
 }
 export interface IRoleAssignment {
-  Player: IPlayer;
-  Spec: ISpecialization;
+  playerId: number,
+  playerName: string,
+  specName: string;
 }
 
 export interface ISpecialization {

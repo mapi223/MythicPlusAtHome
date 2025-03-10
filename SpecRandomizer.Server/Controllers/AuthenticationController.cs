@@ -31,30 +31,33 @@ namespace SpecRandomizer.Server.Controllers
             user.UserName = request.UserName;
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-
+            user.UserId = 0;
+            User newUser = user;
             bool userExists = await _context.Users.AnyAsync(u => u.UserName == user.UserName);
             if(userExists)
             {
                 return BadRequest("User Name Already Exists");
             }
 
-            _context.Users.Add(user);
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
 
-            return Ok(user);
+            return Ok(newUser);
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(UserDTO request)
         {
-            if (user.UserName != request.UserName)
+            bool userExists = await _context.Users.AnyAsync(u => u.UserName == request.UserName);
+            if (!userExists)
                 return BadRequest("User not found");
-
+            user = await _context.Users.FirstAsync(u => u.UserName == request.UserName);
             if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
                 return BadRequest("Wrong password");
 
-            string token = CreateToken(user);
+            string token = "Valid Login Yay";
 
-            return Ok(new { token });
+            return Ok(new {token, user.UserId});
         }
 
 
@@ -79,21 +82,29 @@ namespace SpecRandomizer.Server.Controllers
         private string CreateToken(User user)
         {
             List<Claim> claims = new List<Claim>
-                {
-            new Claim(ClaimTypes.Name,user.UserName),
-            new Claim(ClaimTypes.Role,"Admin")
+            {
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.Role, "Admin")
             };
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value));
+            var tokenKey = _configuration.GetSection("AppSettings:Token").Value;
+            if (string.IsNullOrEmpty(tokenKey))
+            {
+                throw new Exception("JWT Secret Key is missing from configuration");
+            }
+
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(tokenKey));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
             var token = new JwtSecurityToken(
-                                   claims: claims,
-                                   expires: DateTime.UtcNow.AddDays(1),
-                                   signingCredentials: cred
-   );
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(1),
+                signingCredentials: cred
+            );
+
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
         }
-
     }
+
 }
+

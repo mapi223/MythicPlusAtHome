@@ -121,4 +121,22 @@ namespace SpecRandomizer.Server.Model
         public Player Player { get; set; }
         public Specialization AssignedSpec { get; set; }
     }
+
+    public class RoleAssignmentDto
+    {
+        public int PlayerId { get; set; }
+        public string PlayerName { get; set; }
+        public string SpecName { get; set; }
+
+
+        public static List<RoleAssignmentDto> ConvertToDtoList(List<RoleAssignment> roleAssignments)
+        {
+            return [.. roleAssignments.Select(ra => new RoleAssignmentDto
+            {
+                PlayerId = ra.Player.PlayerId,
+                PlayerName = ra.Player.PlayerName,
+                SpecName = ra.AssignedSpec.Name
+            })];
+        }
+    }
 }

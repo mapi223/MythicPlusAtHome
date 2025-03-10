@@ -52,12 +52,12 @@ namespace SpecRandomizer.Server.Services
             return possibleSpecs.Count > 0 ? possibleSpecs[rng.Next(possibleSpecs.Count)] : ClassMappings.Specializations[(ClassList.NONE, Role.INVALID)].First();
         }
 
-        public List<RoleAssignment> GetRoleAssignments(Configuration config)
+        public List<RoleAssignmentDto> GetRoleAssignments(Configuration config)
         {
             var assignments = new List<RoleAssignment>();
             var availablePlayers = new List<Player>(config.Players);
 
-            if (availablePlayers.Count == 0) return assignments;
+            if (availablePlayers.Count == 0) return RoleAssignmentDto.ConvertToDtoList(assignments);
 
             var rng = new Random();
             availablePlayers = [.. availablePlayers.OrderBy(_ => rng.Next())];
@@ -77,7 +77,7 @@ namespace SpecRandomizer.Server.Services
                 double randomSelector = rng.NextDouble();
                 if (randomSelector < .33 || damageCount >= 3)
                 {
-                    if (possibleRoles.Contains(Role.TANK) && tankCount < 0)
+                    if (possibleRoles.Contains(Role.TANK) && tankCount < 1)
                     {
                         assignedRole = Role.TANK;
                     }
@@ -89,7 +89,7 @@ namespace SpecRandomizer.Server.Services
                 }
                 else if (randomSelector > .33 || damageCount >= 3)
                 {
-                    if (possibleRoles.Contains(Role.HEALER) && tankCount < 0)
+                    if (possibleRoles.Contains(Role.HEALER) && healerCount < 1)
                     {
                         assignedRole = Role.HEALER;
                     }
@@ -119,9 +119,7 @@ namespace SpecRandomizer.Server.Services
                     assignments.Add(new RoleAssignment(player, AssignSpecialization(player.SpecList, assignedRole)));
                 }
             }
-
-
-            return assignments;
+            return RoleAssignmentDto.ConvertToDtoList(assignments);
         }
     }
 }

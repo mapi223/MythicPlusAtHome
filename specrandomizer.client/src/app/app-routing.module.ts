@@ -7,8 +7,8 @@ import { AuthenticationGuard } from './authentication.guard';
 
 const routes: Routes = [
   { path: 'roulette', component: PlayerListComponent, title: "SpecRoulette - Roulette Page", canActivate: [AuthenticationGuard] },
-  { path: 'configurationListings', component: ConfigurationListComponent, title: "SpecRoulette - Group Listings Page" },
-  { path: 'logIn', component: LogInComponent, title: "SpecRoulette - User Log In Page" },
+  { path: 'configurationlistings', component: ConfigurationListComponent, title: "SpecRoulette - Group Listings Page" },
+  { path: 'login', component: LogInComponent, title: "SpecRoulette - User Log In Page" },
   { path: '', redirectTo: "/roulette", pathMatch: 'full' }
 ];
 

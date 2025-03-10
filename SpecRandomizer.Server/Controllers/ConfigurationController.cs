@@ -57,12 +57,13 @@ namespace SpecRandomizer.Server.Controllers
         }
 
         [HttpGet("/group/")]
-        public List<RoleAssignment> GetGroupLayout()
+        public List<RoleAssignmentDto> GetGroupLayout()
         {
             var config = _configurationService.GetConfigurationByNewestAsync().Result;
             if (config == null)
             {
-                return null;
+                List<RoleAssignmentDto> emtpyList = new();
+                return emtpyList;
             }
             return _groupConfigurationService.GetRoleAssignments(config);
 

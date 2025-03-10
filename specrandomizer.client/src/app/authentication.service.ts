@@ -12,9 +12,10 @@ export class AuthenticationService {
   constructor(private http: HttpClient) { }
 
   login(username: string, password: string): Observable<any> {
-    return this.http.post<{ token: string }>(`${this.apiUrl}/login`, { username, password }).pipe(
+    return this.http.post<{ token: string, userId: string }>(`${this.apiUrl}/login`, { username, password }).pipe(
       tap(response => {
         localStorage.setItem('token', response.token);
+        localStorage.setItem('userId', response.userId);
       })
     );
   }
