@@ -23,7 +23,11 @@ export class ConfigurationListComponent {
       .subscribe(data => {
         this.configs = data?.$values ? data.$values.map((config: { players: { $values: any; }; }) => ({
         ...config,
-          players: config.players?.$values || [],
+          players: config.players.map(player => ({
+            playerId: player.id || null,
+            playerName: player.name || '',
+            numbers: Array.isArray(player.numbers) ? player.numbers : []
+          })),
           userId: userid
          
         })) : [];
