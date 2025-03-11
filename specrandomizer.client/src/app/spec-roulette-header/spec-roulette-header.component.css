@@ -1,12 +1,34 @@
 .header{
     background-color:cadetblue;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 }
 .menu{
     margin-left:auto;
     cursor:pointer
+}
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 24px;
+  margin-bottom: 10px;
+  margin: -3px -8px 0 -8px;
+  padding: 0 8px 5px 8px;
+  border-bottom: 2px solid #818285;
+}
+
+.left{
+    display: flex;
+    align-items: center;
+}
+
+.left * {
+    margin-right: 25px;
+}
+
+.anchor-style{
+    text-decoration: none !important;
+    color:black;
 }
 
 menu {

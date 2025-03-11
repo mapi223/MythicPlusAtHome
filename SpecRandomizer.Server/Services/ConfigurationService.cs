@@ -16,12 +16,22 @@ public class ConfigurationService
     }
 
 
-    public async Task<List<Configuration>> GetAllConfigurationsByUserIdAsync(int UserId)
+    public async Task<List<ConfigurationDto>> GetAllConfigurationsByUserIdAsync(int UserId)
     {
         return await _context.Configurations
-            .Where(c => c.UserId == UserId)
-            .Include(c => c.Players)
-            .ToListAsync();
+    .Where(c => c.UserId == UserId)
+    .Include(c => c.Players)  // Ensure players are included
+    .Select(c => new ConfigurationDto
+    {
+        ConfigurationId = c.ConfigurationId,
+        Players = c.Players.Select(p => new PlayerDto  // Convert Players to a clean list
+        {
+            PlayerId = p.PlayerId,
+            PlayerName = p.PlayerName,
+            SpecList = p.SpecList
+        }).ToList()
+    })
+    .ToListAsync();
     }
 
     public async Task<Configuration?> GetConfigurationByIdAsync(int id)

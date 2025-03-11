@@ -40,8 +40,8 @@ namespace SpecRandomizer.Server.Controllers
             return Ok(config);
         }
 
-        [HttpGet("/user/{id}")]
-        public async Task<ActionResult<List<Model.Configuration>>> GetAllConfigurationByUserId(int id)
+        [HttpGet("user/{id}")]
+        public async Task<ActionResult<List<Model.ConfigurationDto>>> GetAllConfigurationByUserId(int id)
         {
             return await _configurationService.GetAllConfigurationsByUserIdAsync(id);
            

@@ -21,4 +21,21 @@ namespace SpecRandomizer.Server.Model
         public virtual Configuration? Configuration { get; set; }
 
     }
+
+    public class PlayerDto
+    {
+        public int PlayerId { get; set; }
+        public List<ClassList> SpecList { get; set; } = new List<ClassList>();
+        public string PlayerName { get; set; }
+
+        public static List<PlayerDto> ConvertToDtoList(List<Player> players)
+        {
+            return [.. players.Select(ra => new PlayerDto
+            {
+                PlayerId = ra.PlayerId,
+                PlayerName = ra.PlayerName,
+                SpecList = ra.SpecList
+            })];
+        }
+    }
 }

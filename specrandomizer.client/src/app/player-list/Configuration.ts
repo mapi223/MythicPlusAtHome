@@ -4,7 +4,7 @@ import { IPlayer } from "../player/player.model";
 export interface IConfiguration {
   configurationId: number;
   userId: number;
-  players: IPlayer[];
+  players: any[];
 }
 export interface IRoleAssignment {
   playerId: number,

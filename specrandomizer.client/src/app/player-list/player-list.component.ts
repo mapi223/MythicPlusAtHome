@@ -70,7 +70,7 @@ export class PlayerListComponent implements OnInit {
   inputPlayerList(eventList: IPlayer) {
 
     this.playerList[eventList.id -1] = eventList;
-    console.log(this.playerList);
+    //console.log(this.playerList);
   }
 
 
