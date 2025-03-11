@@ -13,6 +13,7 @@ export class ConfigurationListComponent {
   configs: IConfiguration[] = [];
   playerList: IPlayer[] = [];
 
+
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
@@ -27,12 +28,14 @@ export class ConfigurationListComponent {
          
         })) : [];
         this.configs.forEach(config => {
-          config.players.forEach((playerData, index) => {
-            if (index < this.playerList.length) {
-              this.playerList[index].id = playerData.playerId;
-              this.playerList[index].PlayerName = playerData.playerName;
-              this.playerList[index].SpecList = playerData.specList;
-            }
+          config.players.forEach((playerData) => {
+            this.playerList.push({
+              id: playerData.playerId || null,
+              PlayerName: playerData.playerName || "",
+              SpecList: Array.isArray(playerData.specList?.$values) ? playerData.specList?.$values : []
+            });
+            playerData = this.playerList;
+            this.playerList = [];
           });
         });
         
