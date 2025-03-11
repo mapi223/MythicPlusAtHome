@@ -27,10 +27,14 @@ export class ConfigurationListComponent {
          
         })) : [];
         this.configs.forEach(config => {
-          this.playerList.forEach(player => {
-            player.id = config.players[]
-          }) 
-        })
+          config.players.forEach((playerData, index) => {
+            if (index < this.playerList.length) {
+              this.playerList[index].id = playerData.playerId;
+              this.playerList[index].PlayerName = playerData.playerName;
+              this.playerList[index].SpecList = playerData.specList;
+            }
+          });
+        });
         
         console.log(this.configs);
         console.log(this.playerList);
