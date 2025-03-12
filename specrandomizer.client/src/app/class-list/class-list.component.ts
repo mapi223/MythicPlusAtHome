@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
 import { IClassDetails } from './classDetails';
 import { CLASSLIST } from './mock-list';
 
@@ -11,35 +11,39 @@ import { CLASSLIST } from './mock-list';
 
 export class ClassListComponent {
   classes = CLASSLIST;
-  selectedClass?:IClassDetails;
-  selectedClasses?:IClassDetails[] = [];
-  
+  selectedClasses: IClassDetails[] = [];
+
+  @Input() passedSelected: number[] = [];
   @Output() selectionOutput = new EventEmitter<IClassDetails[]>();
 
-  onSelect(classDetails: IClassDetails): void {
-    this.selectedClass=classDetails;
-    if(this.selectedClasses?.indexOf(classDetails) !== undefined){
-      const foundClass: number = this.selectedClasses.indexOf(classDetails)
-      if(foundClass === -1){
-      this.selectedClasses.push(classDetails);
-      this.selectionOutput.emit(this.selectedClasses);
-      }
-      else{
-        this.selectedClasses.splice(foundClass, 1);
-        this.selectionOutput.emit(this.selectedClasses);
-      }
-  }
-}
-  isSelectedArray(classDetails: IClassDetails){
-    if(this.selectedClasses?.indexOf(classDetails) !== undefined){
-      if(this.selectedClasses?.indexOf(classDetails) >= 0){
-        return true;
-      }
-      else 
-        return false;
+  constructor(private cdr: ChangeDetectorRef) { }
+
+  ngAfterViewInit() {
+    if (this.passedSelected && this.passedSelected.length) {
+      this.passedSelected.forEach(selectedId => {
+        const classDetails = this.classes.find(c => c.id === selectedId);
+        if (classDetails) {
+          this.onSelect(classDetails);
+        }
+      });
+      this.cdr.detectChanges();
     }
-    else
-      return false;
-}
+  }
+
+  onSelect(classDetails: IClassDetails): void {
+    const foundIndex = this.selectedClasses.findIndex(c => c.id === classDetails.id);
+
+    if (foundIndex === -1) {
+      this.selectedClasses.push(classDetails);
+    } else {
+      this.selectedClasses.splice(foundIndex, 1);
+    }
+
+    this.selectionOutput.emit([...this.selectedClasses]); 
+  }
+
+  isSelected(classDetails: IClassDetails): boolean {
+    return this.selectedClasses.some(c => c.id === classDetails.id);
+  }
 }
 

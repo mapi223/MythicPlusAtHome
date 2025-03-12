@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SpecRandomizer.Server.Models;
@@ -11,9 +12,11 @@ using SpecRandomizer.Server.Models;
 namespace SpecRandomizer.Server.Migrations
 {
     [DbContext(typeof(SpecRandomizerDbContext))]
-    partial class SpecRandomizerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250312184223_AddRolesAndRoleManagement")]
+    partial class AddRolesAndRoleManagement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

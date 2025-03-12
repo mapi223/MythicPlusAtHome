@@ -5,6 +5,7 @@
         <app-player 
             *ngFor="let player of playersArray;let i = index" 
             [playerId]=i+1
+            [playerData]="playerList[i]"
             (sendPlayerDetails)="inputPlayerList($event)">
         </app-player>
       

@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SpecRandomizer.Server.Model
 {
-    public class User
+    public class User:IdentityUser
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -20,6 +21,10 @@ namespace SpecRandomizer.Server.Model
 
         public virtual ICollection<Configuration>? Configurations { get; set; }
 
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime ModifiedAt { get; set; } = DateTime.UtcNow;
+
+
     }
 
     public class UserDTO
@@ -33,5 +38,6 @@ namespace SpecRandomizer.Server.Model
             ErrorMessage = "Password must be between 8 and 50 characters and contain only letters, numbers, and the following special characters: !@#$_")]
         [Required]
         public string Password { get; set; }
+        public int UserId { get; internal set; }
     }
 }

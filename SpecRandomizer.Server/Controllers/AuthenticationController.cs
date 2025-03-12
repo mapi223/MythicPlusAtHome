@@ -1,4 +1,6 @@
 ﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -17,8 +19,13 @@ namespace SpecRandomizer.Server.Controllers
         public static User user = new User();
         private readonly IConfiguration _configuration;
         private readonly SpecRandomizerDbContext _context;
-        public AuthenticationController(IConfiguration configuration, SpecRandomizerDbContext context)
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+
+        public AuthenticationController(IConfiguration configuration, SpecRandomizerDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
+            _userManager = userManager;
+            _roleManager = roleManager;
             _configuration = configuration;
             _context = context;
         }
@@ -39,10 +46,11 @@ namespace SpecRandomizer.Server.Controllers
                 return BadRequest("User Name Already Exists");
             }
 
-            _context.Users.Add(newUser);
-            await _context.SaveChangesAsync();
 
-            return Ok(newUser);
+            _context.Users.Add(user);
+            await _userManager.AddToRoleAsync(user, "User");
+            await _context.SaveChangesAsync();
+            return Ok(user);
         }
 
         [HttpPost("login")]
@@ -58,6 +66,45 @@ namespace SpecRandomizer.Server.Controllers
             string token = "Valid Login Yay";
 
             return Ok(new {token, user.UserId});
+        }
+
+        [HttpPost("assign-role")]
+        public async Task<IActionResult> AssignRole([FromBody] UserDTO model)
+        {
+            var user = await _context.Users.FindAsync(model.UserId);
+                if (user == null) return NotFound("User not found");
+            IdentityResult result;
+            if (user.UserId <= 2)
+            {
+                 result = await _userManager.AddToRoleAsync(user, "Admin");
+            }
+            else
+            {
+                result = await _userManager.AddToRoleAsync(user, "User");
+            }
+            if (!result.Succeeded) return BadRequest(result.Errors);
+
+            return Ok(new { Message = "Role assigned successfully" });
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("change-role")]
+        public async Task<IActionResult> ChangeRole([FromBody] UserDTO model)
+        {
+            var user = await _context.Users.FindAsync(model.UserId);
+            if (user == null) return NotFound("User not found");
+
+            var role = await _userManager.IsInRoleAsync(user, "Admin");
+            IdentityResult result;
+            if(role != true)
+            {
+                result = await _userManager.AddToRoleAsync(user, "Admin");
+                if (!result.Succeeded) return BadRequest(result.Errors);
+                return Ok(user);
+            }
+            
+
+            return BadRequest(new { Message = "User is already an Admin" });
         }
 
 
@@ -105,6 +152,7 @@ namespace SpecRandomizer.Server.Controllers
             return jwt;
         }
     }
+
 
 }
 

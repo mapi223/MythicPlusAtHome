@@ -10,27 +10,34 @@ import { IPlayer } from './player.model';
 export class PlayerComponent {
 
   @Input() playerId!: number;
+  @Input() playerData!: IPlayer;
 
   player:IPlayer = {id: 0, SpecList: [], PlayerName: ""};
 
   @Output() sendPlayerDetails = new EventEmitter<IPlayer>();
 
-  ngOnChanges(){
-    if(this.playerId !== undefined){
-      this.player.id = this.playerId;
-      this.player.PlayerName = "Player " + this.player.id;
+  ngOnChanges() { 
+    if (this.playerData) {
+      this.player = {
+        ...this.playerData,
+        id: this.playerId      };  
+      } else {
+        this.player = { id: this.playerId, SpecList: [], PlayerName: "Player " + this.playerId };
+      }
     }
-  }
 
-  inputPlayerSelection(eventList:IClassDetails[]){
-    if (this.player && this.player.SpecList) {
+  inputPlayerSelection(eventList: IClassDetails[]) {
+    if (!eventList || eventList.length === 0) {
       this.player.SpecList = [];
+    } else {
+      this.player.SpecList = eventList
+        .filter(event => event && event.id !== undefined) // Ensure objects exist
+        .map(event => event.id);
     }
-    for (let index = 0; index < eventList.length; index++) {
-      this.player?.SpecList.push(eventList[index].id);
-    }
+
     this.sendPlayerDetails.emit(this.player);
   }
+
 
 
 }

@@ -16,5 +16,6 @@ export const CLASSLIST: IClassDetails[] = [
     {id: 9, className: "Rogue", color: '#FFF468', font_color: Font_b},
     {id: 10, className: "Shaman", color: '#0070DD', font_color: Font},
     {id: 11, className: "Warlock", color: '#8788EE', font_color: Font_b},
-    {id: 12, className: "Warrior", color: '#C69B6D', font_color: Font_b},
+  { id: 12, className: "Warrior", color: '#C69B6D', font_color: Font_b }
+  
 ]

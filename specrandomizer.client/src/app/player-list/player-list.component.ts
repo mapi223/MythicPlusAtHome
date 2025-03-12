@@ -23,11 +23,29 @@ export class PlayerListComponent implements OnInit {
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.updateUserID(); // Set initial value
+    const Config = history.state.configuration;
+    console.log(Config.players);
+    console.log(Config);
+    this.playerList = [...Config.players];
+    console.log(this.playerList);
+    this.Configuration = {
+      ...this.Configuration,
+      players: [...Config.players],
+      UserID: Config.userId
+    };
+    this.userId = Config.userId;
+    this.players = this.playerList.length;
+
+    this.updateUserID(); 
+  }
+
+  ngOnChanges() {
+    this.cdr.detectChanges();
   }
 
   updateUserID() {
     this.userId = Number(localStorage.getItem('userId'));
+    this.Configuration.UserID = this.userId;
   }
 
   addPlayer(){

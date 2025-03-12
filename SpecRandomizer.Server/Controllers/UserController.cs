@@ -47,5 +47,19 @@ namespace SpecRandomizer.Server.Controllers
             }
             return Ok(user);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, UserDTO userDto)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return NotFound();
+
+            user.UserName = userDto.UserName;
+
+            await _context.SaveChangesAsync();
+            return Ok(user);
+        }
+
+
     }
 }

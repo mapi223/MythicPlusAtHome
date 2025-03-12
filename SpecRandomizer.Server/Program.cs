@@ -4,6 +4,9 @@ using SpecRandomizer.Server.Models;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using SpecRandomizer.Server.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using SpecRandomizer.Server.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,16 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
         options.JsonSerializerOptions.WriteIndented = true;
     });
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<SpecRandomizerDbContext>()
+    .AddDefaultTokenProviders();
+
+
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+});
 builder.Services.AddScoped<ConfigurationService>();
 builder.Services.AddScoped<GroupConfigurationService>();
 builder.Services.AddDbContext<SpecRandomizerDbContext>(options => {
@@ -42,6 +55,20 @@ builder.Services.Configure<JsonOptions>(options =>
 
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    string[] roleNames = { "Admin", "User" };
+
+    foreach (var roleName in roleNames)
+    {
+        if (!await roleManager.RoleExistsAsync(roleName))
+        {
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
+    }
+}
 
 app.UseCors("AllowAngular");
 
