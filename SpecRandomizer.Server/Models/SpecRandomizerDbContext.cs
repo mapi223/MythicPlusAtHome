@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SpecRandomizer.Server.Model;
 
 namespace SpecRandomizer.Server.Models
 {
-    public class SpecRandomizerDbContext: DbContext
+    public class SpecRandomizerDbContext: IdentityDbContext
     {
         public SpecRandomizerDbContext(DbContextOptions<SpecRandomizerDbContext> options) : base(options)
         {
