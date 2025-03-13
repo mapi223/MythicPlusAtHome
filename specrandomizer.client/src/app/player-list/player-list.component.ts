@@ -14,24 +14,42 @@ export class PlayerListComponent implements OnInit {
   players: number = 0;
   userId = 1;
   playerList: IPlayer[] = [];
-  
+
   Configuration = {
-    UserID: this.userId, 
+    UserID: this.userId,
     players: this.playerList,
   };
 
   constructor(private http: HttpClient, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.updateUserID(); // Set initial value
+    const Config = history.state.configuration;
+    console.log(Config.players);
+    console.log(Config);
+    this.playerList = [...Config.players];
+    console.log(this.playerList);
+    this.Configuration = {
+      ...this.Configuration,
+      players: [...Config.players],
+      UserID: Config.userId
+    };
+    this.userId = Config.userId;
+    this.players = this.playerList.length;
+
+    this.updateUserID();
+  }
+
+  ngOnChanges() {
+    this.cdr.detectChanges();
   }
 
   updateUserID() {
     this.userId = Number(localStorage.getItem('userId'));
+    this.Configuration.UserID = this.userId;
   }
 
-  addPlayer(){
-    if(this.players<5){
+  addPlayer() {
+    if (this.players < 5) {
       this.players++;
     }
   }
@@ -61,7 +79,7 @@ export class PlayerListComponent implements OnInit {
       console.error("Error occurred:", error);
     });
   }
-  
+
 
   get playersArray() {
     return Array(this.players).fill(0);
@@ -69,7 +87,7 @@ export class PlayerListComponent implements OnInit {
 
   inputPlayerList(eventList: IPlayer) {
 
-    this.playerList[eventList.id -1] = eventList;
+    this.playerList[eventList.id - 1] = eventList;
     //console.log(this.playerList);
   }
 
