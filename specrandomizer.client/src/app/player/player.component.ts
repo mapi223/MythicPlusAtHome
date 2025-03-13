@@ -38,7 +38,8 @@ export class PlayerComponent {
 
     this.sendPlayerDetails.emit(this.player);
   }
-
-
-
 }
+
+
+
+
