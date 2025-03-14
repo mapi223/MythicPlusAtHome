@@ -23,12 +23,12 @@ namespace SpecRandomizer.Server.Models
                 .HasKey(ur => new { ur.UserId, ur.RoleId });
 
             modelBuilder.Entity<UserRole>()
-                .HasOne<Role>()
+                .HasOne(ur => ur.Role)
                 .WithMany()
                 .HasForeignKey(ur => ur.RoleId);
 
             modelBuilder.Entity<UserRole>()
-                .HasOne<User>()
+                .HasOne(ur => ur.User)
                 .WithMany()
                 .HasForeignKey(ur => ur.UserId);
 
