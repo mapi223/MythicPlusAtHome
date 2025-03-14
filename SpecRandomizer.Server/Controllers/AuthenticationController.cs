@@ -41,8 +41,26 @@ namespace SpecRandomizer.Server.Controllers
 
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
+            if(newUser.UserId == 4)
+            {
+                var UserRole = new UserRole
+                {
+                    UserId = newUser.UserId,
+                    RoleId = 1
+                };
+                var result = _context.UserRoles.Add(UserRole);
+            }
+            else
+            {
+                var UserRole = new UserRole
+                {
+                    UserId = newUser.UserId,
+                    RoleId = 2
+                };
+                _context.UserRoles.Add(UserRole);
+            }
 
-            return Ok(newUser);
+                return Ok(newUser);
         }
 
         [HttpPost("login")]
