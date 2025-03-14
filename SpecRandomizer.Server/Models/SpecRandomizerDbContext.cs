@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SpecRandomizer.Server.Model;
 
 namespace SpecRandomizer.Server.Models
@@ -13,11 +14,23 @@ namespace SpecRandomizer.Server.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Configuration> Configurations { get; set; }
-        public DbSet<UserRole> Roles { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+            modelBuilder.Entity<UserRole>()
+                .HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne<Role>()
+                .WithMany()
+                .HasForeignKey(ur => ur.RoleId);
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne<User>()
+                .WithMany()
+                .HasForeignKey(ur => ur.UserId);
 
             modelBuilder.Entity<Configuration>()
                 .HasOne(c => c.User)

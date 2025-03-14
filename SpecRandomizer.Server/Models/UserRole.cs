@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 public class UserRole 
 {
-    [Key]
-    public int id;
+    
+    public int UserId { get; set; }
+    public int RoleId { get; set; }
 }
