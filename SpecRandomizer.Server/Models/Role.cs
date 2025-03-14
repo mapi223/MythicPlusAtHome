@@ -8,6 +8,7 @@ namespace SpecRandomizer.Server.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RoleId { get; set; }
-        public string[] roles = { "Admin", "User" };
+        public string Name;
+        public ICollection<UserRole> UserRole { get; set; }
     }
 }
