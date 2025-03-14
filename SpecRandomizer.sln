@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35806.99 d17.13
+VisualStudioVersion = 17.13.35806.99
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "specrandomizer.client", "specrandomizer.client\specrandomizer.client.esproj", "{2506D0A1-EC5A-4392-E1F1-BF1DD4B57289}"
 EndProject
