@@ -44,6 +44,11 @@ namespace SpecRandomizer.Server.Models
                 .HasForeignKey(p => p.ConfigurationId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Role>().HasData(
+                new Role { RoleId = 1, Name = "Admin" },
+                new Role { RoleId = 2, Name = "User" }
+   );
+
         }
     } 
 }
