@@ -13,9 +13,12 @@ namespace SpecRandomizer.Server.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Configuration> Configurations { get; set; }
+        public DbSet<UserRole> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            
+
             modelBuilder.Entity<Configuration>()
                 .HasOne(c => c.User)
                 .WithMany(u => u.Configurations)
