@@ -17,9 +17,9 @@ namespace SpecRandomizer.Server.Model
         public byte[] PasswordHash { get; set; }
         [Required]
         public byte[] PasswordSalt { get; set; }
-        public UserRole role { get; set; }
 
-        public virtual ICollection<Configuration>? Configurations { get; set; }
+        public  ICollection<Configuration>? Configurations { get; set; }
+        public ICollection<UserRole>? UserRoles { get; set; }
 
     }
 
