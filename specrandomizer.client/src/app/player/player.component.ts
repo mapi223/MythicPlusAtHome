@@ -9,6 +9,7 @@ import { IPlayer } from './player.model';
 })
 export class PlayerComponent {
 
+  @Input() isLoading!: boolean;
   @Input() playerId!: number;
   @Input() playerData!: IPlayer;
 

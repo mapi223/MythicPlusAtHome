@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SpecRandomizer.Server.Models;
 using SpecRandomizer.Server.Model;
+using NuGet.Packaging;
 
 public class ConfigurationService
 {
@@ -60,10 +61,43 @@ public class ConfigurationService
         {
             _context.Configurations.Remove(userConfigs.First()); // Remove the oldest one
         }
-
+        config.ModifiedBy = config.User;
         _context.Configurations.Add(config);
         await _context.SaveChangesAsync();
         return config;
+    }
+
+    public async Task<Configuration> UpdateConfigurationAsync(Configuration updatedConfig, User user, int id)
+    {
+        bool isAdmin = await IsUserAdminAsync(user.UserId);
+        if (!isAdmin)
+        {
+            throw new UnauthorizedAccessException("Only admins can update configurations.");
+        }
+
+        var existingConfig = await _context.Configurations
+         .Include(c => c.Players)
+         .FirstOrDefaultAsync(c => c.ConfigurationId == id);
+
+        if (existingConfig == null)
+        {
+            throw new KeyNotFoundException($"Configuration with ID {id} not found.");
+        }
+
+        
+        existingConfig.UserId = updatedConfig.UserId;
+        existingConfig.ModifiedAt = DateTime.Now;
+        existingConfig.ModifiedBy = user;
+
+        
+        if (updatedConfig.Players != null)
+        {
+            existingConfig.Players.Clear();
+            existingConfig.Players.AddRange(updatedConfig.Players);
+        }
+
+        await _context.SaveChangesAsync(); // Save changes to DB
+        return existingConfig;
     }
 
     public async Task<bool> DeleteConfigurationAsync(int id)
@@ -74,5 +108,11 @@ public class ConfigurationService
         _context.Configurations.Remove(config);
         await _context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<bool> IsUserAdminAsync(int userId)
+    {
+        return await _context.UserRoles
+            .AnyAsync(ur => ur.UserId == userId && ur.RoleId == 1);
     }
 }

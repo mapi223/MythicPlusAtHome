@@ -9,7 +9,7 @@ import { IConfiguration, IRoleAssignment } from './Configuration';
   styleUrls: ['./player-list.component.css']
 })
 export class PlayerListComponent implements OnInit {
-
+  isLoading = false;
   RoleAssignments: any;
   players: number = 0;
   userId = 1;
@@ -60,17 +60,18 @@ export class PlayerListComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log("submit hit");
     this.updateUserID();
     this.http.post<IConfiguration>('https://localhost:7174/api/Configuration', this.Configuration, {
       headers: { 'Content-Type': 'application/json' }
     }).subscribe((response) => {
+      this.isLoading = true;
       response.configurationId;
       console.log("Configuration saved successfully!");
       this.http.get<any>('https://localhost:7174/group/')
         .subscribe((GetResponse) => {
           console.log(GetResponse);
           this.RoleAssignments = GetResponse?.$values || [];
+          this.isLoading = false;
         },
           error => {
             console.log("Beep Boop: Get Error ", error);

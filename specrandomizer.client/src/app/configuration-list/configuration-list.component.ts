@@ -21,7 +21,6 @@ export class ConfigurationListComponent {
   playerList: IPlayer[] = [];
   classes = CLASSLIST;
 
-
   constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit() {
