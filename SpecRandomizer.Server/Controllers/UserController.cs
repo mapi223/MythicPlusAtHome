@@ -50,8 +50,9 @@ namespace SpecRandomizer.Server.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<User> UpdateUser([FromBody] User updatedUser, [FromBody] User Modifier, int id)
+        public async Task<User> UpdateUser([FromBody] User updatedUser, [FromQuery] int modifierId, int id)
         {
+            User Modifier = await _context.Users.FirstOrDefaultAsync(u => u.UserId == modifierId);
             bool isAdmin = await IsUserAdminAsync(Modifier.UserId);
 
             if (!isAdmin)
@@ -69,8 +70,6 @@ namespace SpecRandomizer.Server.Controllers
             }
 
             existingUser.UserName = updatedUser.UserName;
-            existingUser.PasswordHash = updatedUser.PasswordHash;
-            existingUser.PasswordSalt = updatedUser.PasswordSalt;
             existingUser.ModifiedBy = Modifier;
             existingUser.ModifiedAt = DateTime.UtcNow;
 
@@ -80,6 +79,7 @@ namespace SpecRandomizer.Server.Controllers
                 existingUser.Configurations.AddRange(updatedUser.Configurations);
             }
 
+            await _context.SaveChangesAsync(); 
             return existingUser;
         }
         public async Task<bool> IsUserAdminAsync(int userId)
