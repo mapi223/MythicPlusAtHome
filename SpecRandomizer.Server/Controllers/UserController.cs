@@ -72,6 +72,7 @@ namespace SpecRandomizer.Server.Controllers
             existingUser.PasswordHash = updatedUser.PasswordHash;
             existingUser.PasswordSalt = updatedUser.PasswordSalt;
             existingUser.ModifiedBy = Modifier;
+            existingUser.ModifiedAt = DateTime.UtcNow;
 
             if (updatedUser.Configurations != null)
             {

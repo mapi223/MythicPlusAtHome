@@ -86,7 +86,7 @@ public class ConfigurationService
 
         
         existingConfig.UserId = updatedConfig.UserId;
-        existingConfig.ModifiedAt = DateTime.Now;
+        existingConfig.ModifiedAt = DateTime.UtcNow;
         existingConfig.ModifiedBy = user;
 
         
