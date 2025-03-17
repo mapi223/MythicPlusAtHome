@@ -41,7 +41,7 @@ namespace SpecRandomizer.Server.Controllers
 
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
-            if(newUser.UserId == 4)
+            if(newUser.UserId == 2)
             {
                 var UserRole = new UserRole
                 {
@@ -59,7 +59,7 @@ namespace SpecRandomizer.Server.Controllers
                 };
                 _context.UserRoles.Add(UserRole);
             }
-
+           var saveResult =  await _context.SaveChangesAsync();
                 return Ok(newUser);
         }
 
@@ -74,6 +74,9 @@ namespace SpecRandomizer.Server.Controllers
                 return BadRequest("Wrong password");
 
             string token = "Valid Login Yay";
+            
+
+
 
             return Ok(new {token, user.UserId});
         }

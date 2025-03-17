@@ -20,6 +20,9 @@ namespace SpecRandomizer.Server.Model
 
         public  ICollection<Configuration>? Configurations { get; set; }
         public ICollection<UserRole>? UserRoles { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime ModifiedAt { get; set; } = DateTime.UtcNow;
+        public User? ModifiedBy { get; set; }
 
     }
 
