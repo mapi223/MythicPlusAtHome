@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using NuGet.Packaging;
 using SpecRandomizer.Server.Model;
 using SpecRandomizer.Server.Models;
@@ -52,8 +53,8 @@ namespace SpecRandomizer.Server.Controllers
             return Ok(user);
         }
 
-        [HttpPut("{id}")]
-        public async Task<User> UpdateUser([FromBody] User updatedUser, [FromQuery] int modifierId, int id)
+        [HttpPut("update/{id}")]
+        public async Task<User> UpdateUser([FromRoute] int id, [FromQuery] int modifierId, [FromBody] UserDTO updatedUser)
         {
             User Modifier = await _context.Users.FirstOrDefaultAsync(u => u.UserId == modifierId);
             bool isAdmin = await _userService.IsUserAdminAsync(Modifier.UserId);
@@ -75,12 +76,6 @@ namespace SpecRandomizer.Server.Controllers
             existingUser.UserName = updatedUser.UserName;
             existingUser.ModifiedBy = Modifier;
             existingUser.ModifiedAt = DateTime.UtcNow;
-
-            if (updatedUser.Configurations != null)
-            {
-                existingUser.Configurations.Clear();
-                existingUser.Configurations.AddRange(updatedUser.Configurations);
-            }
 
             await _context.SaveChangesAsync();
             return existingUser;

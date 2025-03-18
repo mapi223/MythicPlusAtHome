@@ -36,6 +36,14 @@ namespace SpecRandomizer.Server.Model
                 Players = PlayerDto.ConvertToDtoList((List<Player>)ra.Players)
             })];
         }
-
+        public static ConfigurationDto ConvertToDto(Configuration configurations)
+        {
+            return new ConfigurationDto
+            {
+                ConfigurationId = configurations.ConfigurationId,
+                UserId = configurations.UserId,
+                Players = PlayerDto.ConvertToDtoList((List<Player>)configurations.Players)
+            };
+        }
     }
 }

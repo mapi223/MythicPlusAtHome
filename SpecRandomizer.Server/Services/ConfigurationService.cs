@@ -67,9 +67,9 @@ public class ConfigurationService
         return config;
     }
 
-    public async Task<Configuration> UpdateConfigurationAsync(Configuration updatedConfig, User user, int id)
+    public async Task<Configuration> UpdateConfigurationAsync(Configuration updatedConfig, int userId, int id)
     {
-        bool isAdmin = await IsUserAdminAsync(user.UserId);
+        bool isAdmin = await IsUserAdminAsync(userId);
         if (!isAdmin)
         {
             throw new UnauthorizedAccessException("Only admins can update configurations.");
@@ -87,7 +87,7 @@ public class ConfigurationService
         
         existingConfig.UserId = updatedConfig.UserId;
         existingConfig.ModifiedAt = DateTime.UtcNow;
-        existingConfig.ModifiedBy = user;
+        existingConfig.ModifiedBy = await _context.Users.FirstOrDefaultAsync(u=> u.UserId == userId);
 
         
         if (updatedConfig.Players != null)

@@ -23,6 +23,7 @@ export class LogInComponent {
       this.router.navigate(['/roulette']);
     });
   }
+
   Register(): void {
     this.authService.register(this.username, this.password).subscribe(() => {
       alert("New User Created");

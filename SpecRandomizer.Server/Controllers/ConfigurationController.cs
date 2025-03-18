@@ -46,10 +46,10 @@ namespace SpecRandomizer.Server.Controllers
         public async Task<ActionResult<List<Model.ConfigurationDto>>> GetAllConfigurationByUserId(int id)
         {
             return await _configurationService.GetAllConfigurationsByUserIdAsync(id);
-           
+
         }
 
-       
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteConfiguration(int id)
         {
@@ -71,16 +71,29 @@ namespace SpecRandomizer.Server.Controllers
 
         }
         [HttpGet("admin/{userId}")]
-        public async Task<List<ConfigurationDto>> getConfigurationDtosForAdminSpecificUser(int userId, [FromQuery]int AdminId)
+        public async Task<List<ConfigurationDto>> getConfigurationDtosForAdminSpecificUser(int userId, [FromQuery] int AdminId)
         {
             bool isAdmin = await _configurationService.IsUserAdminAsync(AdminId);
             if (!isAdmin)
             {
                 throw new UnauthorizedAccessException("Only Admins can get all configurations for another user");
             }
-            
+
             return await _configurationService.GetAllConfigurationsByUserIdAsync(userId);
 
+        }
+
+        [HttpPut("{UserId}")]
+        public async Task<ConfigurationDto> updateConfigurationForAdminSpecificUserSpecificConfiguration([FromRoute] int UserId, [FromQuery] int modifierId, [FromBody] Configuration Config)
+        {
+            bool isAdmin = await _configurationService.IsUserAdminAsync(modifierId);
+            if (!isAdmin)
+            {
+                throw new UnauthorizedAccessException("Only admins may update configurations for Users");
+            }
+
+            var result = await _configurationService.UpdateConfigurationAsync(Config, modifierId, UserId);
+            return ConfigurationDto.ConvertToDto(result);
         }
 
     }

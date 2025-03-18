@@ -36,6 +36,8 @@ export class AuthenticationService {
     this.isAdminSubject.next(false);
     localStorage.removeItem('token');
     this.isTokenSubject.next(false);
+    localStorage.removeItem('userId');
+    localStorage.removeItem('isToken');
   }
 
   isLoggedIn(): boolean {

@@ -45,7 +45,7 @@ builder.Services.Configure<JsonOptions>(options =>
 var app = builder.Build();
 
 app.UseCors("AllowAngular");
-
+app.UseRouting();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -60,8 +60,9 @@ app.UseHttpsRedirection();
 
 
 app.UseAuthorization();
-
 app.MapControllers();
+
+
 
 app.MapFallbackToFile("/index.html");
 
