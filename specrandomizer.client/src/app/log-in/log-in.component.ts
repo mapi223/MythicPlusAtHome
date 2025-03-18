@@ -19,12 +19,14 @@ export class LogInComponent {
 
   login(): void {
     this.authService.login(this.username, this.password).subscribe(() => {
+      alert("Log in successful");
       this.router.navigate(['/roulette']);
     });
   }
   Register(): void {
     this.authService.register(this.username, this.password).subscribe(() => {
-      alert("Pleae log in with your as a new User")
+      alert("New User Created");
+      this.login();
     });
   }
   setLogin() {

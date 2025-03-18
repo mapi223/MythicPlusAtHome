@@ -4,6 +4,8 @@ using SpecRandomizer.Server.Model;
 using SpecRandomizer.Server.Models;
 using SpecRandomizer.Server.Services;
 using System.Configuration;
+using System.Threading.Tasks;
+using Configuration = SpecRandomizer.Server.Model.Configuration;
 
 
 namespace SpecRandomizer.Server.Controllers
@@ -66,6 +68,18 @@ namespace SpecRandomizer.Server.Controllers
                 return emtpyList;
             }
             return _groupConfigurationService.GetRoleAssignments(config);
+
+        }
+        [HttpGet("admin/{userId}")]
+        public async Task<List<ConfigurationDto>> getConfigurationDtosForAdminSpecificUser(int userId, [FromQuery]int AdminId)
+        {
+            bool isAdmin = await _configurationService.IsUserAdminAsync(AdminId);
+            if (!isAdmin)
+            {
+                throw new UnauthorizedAccessException("Only Admins can get all configurations for another user");
+            }
+            
+            return await _configurationService.GetAllConfigurationsByUserIdAsync(userId);
 
         }
 

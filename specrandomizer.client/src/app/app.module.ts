@@ -12,6 +12,7 @@ import { SpecRouletteHeaderComponent } from './spec-roulette-header/spec-roulett
 import { GroupConfigurationComponent } from './group-configuration/group-configuration.component';
 import { ConfigurationListComponent } from './configuration-list/configuration-list.component';
 import { LogInComponent } from './log-in/log-in.component';
+import { AdminComponent } from './admin/admin.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { LogInComponent } from './log-in/log-in.component';
     SpecRouletteHeaderComponent,
     GroupConfigurationComponent,
     ConfigurationListComponent,
-    LogInComponent
+    LogInComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,

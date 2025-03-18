@@ -7,12 +7,24 @@ import { AuthenticationService } from '../authentication.service';
   styleUrls: ['./spec-roulette-header.component.css']
 })
 export class SpecRouletteHeaderComponent {
-
+  
   isMenuOpen = false;
   username = '';
   password = '';
+  isToken: boolean = false;
+  isAdmin: boolean = false;
 
+  
   constructor(private authService: AuthenticationService) { }
+
+  ngOnInit() {
+    this.authService.isAdmin$.subscribe(status => {
+      this.isAdmin = status;
+    });
+    this.authService.isToken$.subscribe(status => {
+      this.isToken = status;
+  });
+  }
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
@@ -25,6 +37,9 @@ export class SpecRouletteHeaderComponent {
     }, error => {
       console.error('Login failed', error);
     });
+  }
+  logout() {
+    this.authService.logout();
   }
 
   goHome() {

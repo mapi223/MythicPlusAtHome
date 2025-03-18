@@ -74,11 +74,13 @@ namespace SpecRandomizer.Server.Controllers
                 return BadRequest("Wrong password");
 
             string token = "Valid Login Yay";
-            
+
+            bool isAdmin =  await _context.UserRoles
+                .AnyAsync(ur => ur.UserId == user.UserId && ur.RoleId == 1);
 
 
 
-            return Ok(new {token, user.UserId});
+            return Ok(new {token, user.UserId, isAdmin});
         }
 
 

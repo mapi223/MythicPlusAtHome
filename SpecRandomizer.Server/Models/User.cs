@@ -37,5 +37,6 @@ namespace SpecRandomizer.Server.Model
             ErrorMessage = "Password must be between 8 and 50 characters and contain only letters, numbers, and the following special characters: !@#$_")]
         [Required]
         public string Password { get; set; }
+        public int? uId { get; set; }
     }
 }

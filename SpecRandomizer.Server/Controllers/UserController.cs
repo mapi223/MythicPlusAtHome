@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
 using SpecRandomizer.Server.Model;
 using SpecRandomizer.Server.Models;
+using SpecRandomizer.Server.Services;
 
 
 namespace SpecRandomizer.Server.Controllers
@@ -12,13 +13,15 @@ namespace SpecRandomizer.Server.Controllers
     public class UserController : ControllerBase
     {
         private readonly SpecRandomizerDbContext _context;
+        private readonly UserService _userService;
 
-        public UserController(SpecRandomizerDbContext context)
+        public UserController(SpecRandomizerDbContext context, UserService userService)
         {
             _context = context;
+            _userService = userService;
         }
 
-       
+
         [HttpPost]
         public async Task<IActionResult> PostUser([FromBody] User user)
         {
@@ -53,16 +56,16 @@ namespace SpecRandomizer.Server.Controllers
         public async Task<User> UpdateUser([FromBody] User updatedUser, [FromQuery] int modifierId, int id)
         {
             User Modifier = await _context.Users.FirstOrDefaultAsync(u => u.UserId == modifierId);
-            bool isAdmin = await IsUserAdminAsync(Modifier.UserId);
+            bool isAdmin = await _userService.IsUserAdminAsync(Modifier.UserId);
 
             if (!isAdmin)
             {
                 throw new UnauthorizedAccessException($"Only Admins can update Users");
             }
 
-           var existingUser = await _context.Users
-         .Include(u => u.Configurations)
-         .FirstOrDefaultAsync(u => u.UserId == id);
+            var existingUser = await _context.Users
+          .Include(u => u.Configurations)
+          .FirstOrDefaultAsync(u => u.UserId == id);
 
             if (existingUser == null)
             {
@@ -79,14 +82,34 @@ namespace SpecRandomizer.Server.Controllers
                 existingUser.Configurations.AddRange(updatedUser.Configurations);
             }
 
-            await _context.SaveChangesAsync(); 
+            await _context.SaveChangesAsync();
             return existingUser;
         }
-        public async Task<bool> IsUserAdminAsync(int userId)
-        {
-            return await _context.UserRoles
-                .AnyAsync(ur => ur.UserId == userId && ur.RoleId == 1);
-        }
 
+
+        [HttpGet("admin/{AdminId}")]
+        public async Task<List<UserDTO>> GetAllUsersForAdmin(int AdminId)
+        {
+            User Modifier = await _context.Users.FirstOrDefaultAsync(u => u.UserId == AdminId);
+            bool isAdmin = await _userService.IsUserAdminAsync(Modifier.UserId);
+
+            if (!isAdmin)
+            {
+                throw new UnauthorizedAccessException($"Only Admins can get all Users");
+            }
+
+            List<UserDTO> users = _context.Users
+                  .Select(u => new UserDTO
+                  {
+                      uId = u.UserId,
+                      UserName = u.UserName,
+                      Password = u.UserName
+                  }).ToList();
+
+            return users;
+
+        }
     }
+
+    
 }

@@ -17,6 +17,7 @@ builder.Services.AddControllers()
     });
 builder.Services.AddScoped<ConfigurationService>();
 builder.Services.AddScoped<GroupConfigurationService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddDbContext<SpecRandomizerDbContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("SpecRandomizerServerContext"));
 });
