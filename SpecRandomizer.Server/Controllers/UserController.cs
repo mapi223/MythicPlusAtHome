@@ -54,7 +54,11 @@ namespace SpecRandomizer.Server.Controllers
         }
 
         [HttpPut("update/{id}")]
-        public async Task<User> UpdateUser([FromRoute] int id, [FromQuery] int modifierId, [FromBody] UserDTO updatedUser)
+        public async Task<UserDTO> UpdateUser(
+            [FromRoute] int id, 
+            [FromQuery] int modifierId, 
+            [FromBody] UserDTO updatedUser
+        )
         {
             User Modifier = await _context.Users.FirstOrDefaultAsync(u => u.UserId == modifierId);
             bool isAdmin = await _userService.IsUserAdminAsync(Modifier.UserId);
@@ -73,14 +77,14 @@ namespace SpecRandomizer.Server.Controllers
                 throw new KeyNotFoundException($"User with ID {id} not found.");
             }
 
-            existingUser.UserName = updatedUser.UserName;
+            existingUser.UserName = updatedUser.userName;
             existingUser.ModifiedBy = Modifier;
             existingUser.ModifiedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
-            return existingUser;
-        }
 
+            return UserDTO.convertToDTO(existingUser);
+        }
 
         [HttpGet("admin/{AdminId}")]
         public async Task<List<UserDTO>> GetAllUsersForAdmin(int AdminId)
@@ -97,8 +101,8 @@ namespace SpecRandomizer.Server.Controllers
                   .Select(u => new UserDTO
                   {
                       uId = u.UserId,
-                      UserName = u.UserName,
-                      Password = u.UserName
+                      userName = u.UserName,
+                      password = u.UserName
                   }).ToList();
 
             return users;

@@ -27,8 +27,8 @@ namespace SpecRandomizer.Server.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserDTO request)
         {
-            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-            user.UserName = request.UserName;
+            CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
+            user.UserName = request.userName;
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
             user.UserId = 0;
@@ -66,11 +66,11 @@ namespace SpecRandomizer.Server.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(UserDTO request)
         {
-            bool userExists = await _context.Users.AnyAsync(u => u.UserName == request.UserName);
+            bool userExists = await _context.Users.AnyAsync(u => u.UserName == request.userName);
             if (!userExists)
                 return BadRequest("User not found");
-            user = await _context.Users.FirstAsync(u => u.UserName == request.UserName);
-            if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
+            user = await _context.Users.FirstAsync(u => u.UserName == request.userName);
+            if (!VerifyPasswordHash(request.password, user.PasswordHash, user.PasswordSalt))
                 return BadRequest("Wrong password");
 
             string token = "Valid Login Yay";

@@ -46,7 +46,6 @@
 </div>
 
 <div *ngIf="isEditingAConfig">
-  <form>
     <div *ngFor="let player of configs[configIndex].players; let i = index">
       <label>
         Player Name
@@ -59,5 +58,4 @@
       </div>
     </div>
     <button type="buttton" (click)="sendDetails(usrId, configIndex)">Submit</button>
-  </form>
 </div>

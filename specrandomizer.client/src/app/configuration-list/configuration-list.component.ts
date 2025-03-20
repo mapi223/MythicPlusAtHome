@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { IPlayer } from '../player/player.model';
 import { CLASSLIST } from '../class-list/mock-list';
 import { Router } from '@angular/router';
+import { AppModule } from '../app.module';
 
 @Component({
   selector: 'app-configuration-list',
@@ -26,7 +27,7 @@ export class ConfigurationListComponent {
   ngOnInit() {
     const userid = localStorage.getItem('userId');
 
-    this.http.get<any>('https://localhost:7174/api/Configuration/user/' + userid)
+    this.http.get<any>(AppModule.ConfigApi+'/api/Configuration/user/' + userid)
       .subscribe(data => {
         this.configs = data?.$values ? data.$values.map((config: { players: { $values: any; }; }) => ({
           ...config,

@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { AppModule } from './app.module';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  private apiUrl = 'https://localhost:7174/api/auth';
+  private apiUrl = AppModule.AdminApi+'/api/auth';
 
   private isAdminSubject = new BehaviorSubject<boolean>(this.getAdminStatus());
   private isTokenSubject = new BehaviorSubject<boolean>(this.getTokenStatus());

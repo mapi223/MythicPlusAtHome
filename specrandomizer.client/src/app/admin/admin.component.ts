@@ -6,6 +6,7 @@ import { IUser } from './user.model';
 import { IConfiguration } from '../player-list/Configuration';
 import { CLASSLIST } from '../class-list/mock-list';
 import { IClassDetails } from '../class-list/classDetails'
+import { AppModule } from '../app.module';
 
 @Component({
   selector: 'app-admin',
@@ -30,7 +31,7 @@ export class AdminComponent {
     const userid = localStorage.getItem('userId');
 
 
-    this.http.get<any>('https://localhost:7174/api/user/admin/' + userid)
+    this.http.get<any>(AppModule.AdminApi+'/api/user/admin/' + userid)
       .subscribe(data => {
         this.users = data?.$values ? data.$values.map((user: any): IUser => ({
           userName: user.userName || "",
@@ -47,7 +48,7 @@ export class AdminComponent {
     this.findUsers = false;
     this.usrId = usrId;
     this.usrIndex = index;
-    this.http.get<any>('https://localhost:7174/api/Configuration/admin/' + usrId + '?adminId=' + adminId)
+    this.http.get<any>(AppModule.AdminApi+'/api/auth/admin/c/' + usrId + '?adminId=' + adminId)
       .subscribe(data => {
         this.configs = data?.$values ? data.$values.map((config: { players: { $values: any; }; }) => ({
           ...config,
@@ -81,7 +82,7 @@ export class AdminComponent {
   }
 
   sendDetails(usrId: Number, index:any) {
-    const adminId = localStorage.getItem('userId');
+    let adminId = Number(localStorage.getItem('userId'));
     const password = this.users[index].userName;
     let userDto = this.users[index];
     if (this.isEditingAUser) {
@@ -91,7 +92,7 @@ export class AdminComponent {
         return;
       }
       this.isEditingAUser = false;
-      this.http.put("https://localhost:7174/api/Users/update/" + usrId + "?modifierId=" + adminId, userDto, {
+      this.http.put(`${AppModule.AdminApi}/api/auth/update/${usrId}?modifierId=${adminId}`, userDto, {
         headers: { 'Content-Type': 'application/json', 
                    'Accept': 'application/json'
         }
@@ -108,7 +109,7 @@ export class AdminComponent {
     }
     else if (this.isEditingAConfig) {
       this.isEditingAConfig = false;
-      this.http.put("https://localhost:7174/api/Configurations/" + usrId + "?modifierId=" + adminId, this.configs[index], {
+      this.http.put(AppModule.AdminApi+"/api/auth/" + usrId + "?modifierId=" + adminId, this.configs[index], {
         headers: { 'Content-Type': 'application/json' }
       }).subscribe(response => {
         console.log(response)
@@ -126,13 +127,13 @@ export class AdminComponent {
   }
 
   selectClasses(cId: any, index: any) {
-    const specList:number[] = this.configs[this.configIndex].players[index].specList;
+    const specList:number[] = this.configs[this.configIndex].players[index].SpecList;
     const foundIndex = specList.findIndex(sp => sp==cId)
 
     if (foundIndex === -1) {
-      this.configs[this.configIndex].players[index].specList.push(cId);
+      this.configs[this.configIndex].players[index].SpecList.push(cId);
     } else {
-      this.configs[this.configIndex].players[index].specList.splice(foundIndex, 1);
+      this.configs[this.configIndex].players[index].SpecList.splice(foundIndex, 1);
     }
   }
 }

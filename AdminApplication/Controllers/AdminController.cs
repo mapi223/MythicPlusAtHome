@@ -1,0 +1,259 @@
+﻿using AdminApplication.Models;
+using Azure.Core;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using NuGet.Packaging;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+
+namespace AdminApplication.Controllers
+{
+    [Route("api/auth")]
+    [ApiController]
+    public class AdminController : ControllerBase
+    {
+        public static User user = new User();
+        private readonly IConfiguration _configuration;
+        private readonly SpecRandomizerDbContext _context;
+        
+        public AdminController(IConfiguration configuration, SpecRandomizerDbContext context)
+        {
+            _configuration = configuration;
+            _context = context;
+        }
+
+
+        [HttpPost("register")]
+        public async Task<ActionResult<User>> Register(UserDTO request)
+        {
+            CreatePasswordHash(request.password, out byte[] passwordHash, out byte[] passwordSalt);
+            user.UserName = request.userName;
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+            user.UserId = 0;
+            User newUser = user;
+            bool userExists = await _context.Users.AnyAsync(u => u.UserName == user.UserName);
+            if(userExists)
+            {
+                return BadRequest("User Name Already Exists");
+            }
+
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
+            if(newUser.UserId == 2)
+            {
+                var UserRole = new UserRole
+                {
+                    UserId = newUser.UserId,
+                    RoleId = 1
+                };
+                var result = _context.UserRoles.Add(UserRole);
+            }
+            else
+            {
+                var UserRole = new UserRole
+                {
+                    UserId = newUser.UserId,
+                    RoleId = 2
+                };
+                _context.UserRoles.Add(UserRole);
+            }
+           var saveResult =  await _context.SaveChangesAsync();
+                return Ok(newUser);
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<string>> Login(UserDTO request)
+        {
+            bool userExists = await _context.Users.AnyAsync(u => u.UserName == request.userName);
+            if (!userExists)
+                return BadRequest("User not found");
+            user = await _context.Users.FirstAsync(u => u.UserName == request.userName);
+            if (!VerifyPasswordHash(request.password, user.PasswordHash, user.PasswordSalt))
+                return BadRequest("Wrong password");
+
+            string token = "Valid Login Yay";
+
+            bool isAdmin =  await _context.UserRoles
+                .AnyAsync(ur => ur.UserId == user.UserId && ur.RoleId == 1);
+
+
+
+            return Ok(new {token, user.UserId, isAdmin});
+        }
+
+        [HttpPut("{UserId}")]
+        public async Task<ConfigurationDto> updateConfigurationForAdminSpecificUserSpecificConfiguration([FromRoute] int UserId, [FromQuery] int modifierId, [FromBody] Configuration Config)
+        {
+            bool isAdmin = await IsUserAdminAsync(modifierId);
+            if (!isAdmin)
+            {
+                throw new UnauthorizedAccessException("Only admins can update configurations.");
+            }
+
+            var existingConfig = await _context.Configurations
+             .Include(c => c.Players)
+             .FirstOrDefaultAsync(c => c.ConfigurationId == Config.ConfigurationId);
+
+            if (existingConfig == null)
+            {
+                throw new KeyNotFoundException($"Configuration with ID {Config.ConfigurationId} not found.");
+            }
+
+
+            existingConfig.UserId = UserId;
+            existingConfig.ModifiedAt = DateTime.UtcNow;
+            existingConfig.ModifiedBy = await _context.Users.FirstOrDefaultAsync(u => u.UserId == UserId);
+
+
+            if (Config.Players != null)
+            {
+                existingConfig.Players.Clear();
+                existingConfig.Players.AddRange(Config.Players);
+            }
+
+            await _context.SaveChangesAsync(); // Save changes to DB
+   
+            return ConfigurationDto.ConvertToDto(existingConfig);
+        }
+
+        [HttpGet("admin/{AdminId}")]
+        public async Task<List<UserDTO>> GetAllUsersForAdmin(int AdminId)
+        {
+            User Modifier = await _context.Users.FirstOrDefaultAsync(u => u.UserId == AdminId);
+            bool isAdmin = await IsUserAdminAsync(Modifier.UserId);
+
+            if (!isAdmin)
+            {
+                throw new UnauthorizedAccessException($"Only Admins can get all Users");
+            }
+
+            List<UserDTO> users = _context.Users
+                  .Select(u => new UserDTO
+                  {
+                      uId = u.UserId,
+                      userName = u.UserName,
+                      password = u.UserName
+                  }).ToList();
+
+            return users;
+
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<UserDTO> UpdateUser(
+            [FromRoute] int id,
+            [FromQuery] int modifierId,
+            [FromBody] UserDTO updatedUser
+        )
+        {
+            User Modifier = await _context.Users.FirstOrDefaultAsync(u => u.UserId == modifierId);
+            bool isAdmin = await IsUserAdminAsync(Modifier.UserId);
+
+            if (!isAdmin)
+            {
+                throw new UnauthorizedAccessException($"Only Admins can update Users");
+            }
+
+            var existingUser = await _context.Users
+          .Include(u => u.Configurations)
+          .FirstOrDefaultAsync(u => u.UserId == id);
+
+            if (existingUser == null)
+            {
+                throw new KeyNotFoundException($"User with ID {id} not found.");
+            }
+
+            existingUser.UserName = updatedUser.userName;
+            existingUser.ModifiedBy = Modifier;
+            existingUser.ModifiedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return UserDTO.convertToDTO(existingUser);
+        }
+
+        [HttpGet("admin/c/{userId}")]
+        public async Task<List<ConfigurationDto>> getConfigurationDtosForAdminSpecificUser(int userId, [FromQuery] int AdminId)
+        {
+            bool isAdmin = await IsUserAdminAsync(AdminId);
+            if (!isAdmin)
+            {
+                throw new UnauthorizedAccessException("Only Admins can get all configurations for another user");
+            }
+
+            return await _context.Configurations
+            .Where(c => c.UserId == userId)
+            .Include(c => c.Players)  // Ensure players are included
+            .Select(c => new ConfigurationDto
+            {
+              ConfigurationId = c.ConfigurationId,
+              Players = c.Players.Select(p => new PlayerDto  // Convert Players to a clean list
+                {
+                    PlayerId = p.PlayerId,
+                    PlayerName = p.PlayerName,
+                    SpecList = p.SpecList
+                }).ToList()
+            })
+            .ToListAsync();
+        }
+
+        
+
+
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
+
+        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512(passwordSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(passwordHash);
+            }
+        }
+
+        private string CreateToken(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.Role, "Admin")
+            };
+            var tokenKey = _configuration.GetSection("AppSettings:Token").Value;
+            if (string.IsNullOrEmpty(tokenKey))
+            {
+                throw new Exception("JWT Secret Key is missing from configuration");
+            }
+
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(tokenKey));
+            var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(1),
+                signingCredentials: cred
+            );
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
+        }
+
+        public async Task<bool> IsUserAdminAsync(int userId)
+        {
+            return await _context.UserRoles
+                .AnyAsync(ur => ur.UserId == userId && ur.RoleId == 1);
+        }
+    }
+
+}
+

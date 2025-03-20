@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { IPlayer } from '../player/player.model';
 import { HttpClient } from '@angular/common/http';
 import { IConfiguration, IRoleAssignment } from './Configuration';
+import { AppModule } from '../app.module';
 
 @Component({
   selector: 'app-player-list',
@@ -61,13 +62,13 @@ export class PlayerListComponent implements OnInit {
 
   onSubmit() {
     this.updateUserID();
-    this.http.post<IConfiguration>('https://localhost:7174/api/Configuration', this.Configuration, {
+    this.http.post<IConfiguration>(AppModule.ConfigApi+'api/Configuration', this.Configuration, {
       headers: { 'Content-Type': 'application/json' }
     }).subscribe((response) => {
       this.isLoading = true;
       response.configurationId;
       console.log("Configuration saved successfully!");
-      this.http.get<any>('https://localhost:7174/group/')
+      this.http.get<any>(AppModule.GroupApi+'/group/')
         .subscribe((GetResponse) => {
           console.log(GetResponse);
           this.RoleAssignments = GetResponse?.$values || [];

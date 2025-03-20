@@ -36,4 +36,10 @@ import { AdminComponent } from './admin/admin.component';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+
+ static UserApi: String = 'https://localhost:7283';
+ static GroupApi: String = 'https://localhost:7234';
+ static ConfigApi: String = 'https://localhost:7006';
+ static AdminApi: String = 'https://localhost:7264';
+}
