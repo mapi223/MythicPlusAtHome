@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\specrandomizer.client\specrandomizer.client.esproj">
+    <ProjectReference Include="..\specrandomizer.client\SpecRandomizer.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
