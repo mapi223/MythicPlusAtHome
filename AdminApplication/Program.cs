@@ -20,6 +20,11 @@ builder.Services.AddDbContext<SpecRandomizerDbContext>(options => {
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<AdminApplication.Services.AuthenticatonService>();
+builder.Services.AddDbContext<SpecRandomizerDbContext>(options => {
+    options.UseNpgsql(builder.Configuration.GetConnectionString("SpecRandomizerServerContext"));
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular",

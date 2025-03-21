@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SpecRandomizer.Server.Models;
-using SpecRandomizer.Server.Model;
 using NuGet.Packaging;
 using ConfigurtionService.Models;
 
@@ -42,13 +40,7 @@ public class ConfigurationService
             .Include(c => c.Players)
             .FirstOrDefaultAsync(c => c.ConfigurationId == id);
     }
-    public async Task<Configuration?> GetConfigurationByNewestAsync()
-    {
-        return await _context.Configurations
-            .OrderByDescending(c => c.CreatedAt)
-            .Include(c => c.Players)
-            .FirstAsync();
-    }
+    
 
     // Add a new configuration while ensuring a max limit of 10 per UserId
     public async Task<Configuration> AddConfigurationAsync(Configuration config)

@@ -1,9 +1,8 @@
-﻿using ConfigurtionService.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SpecRandomizer.Server.Model;
 
-namespace SpecRandomizer.Server.Models
+namespace ConfigurtionService.Models
 {
     public class SpecRandomizerDbContext: DbContext
     {

@@ -31,7 +31,7 @@ export class AdminComponent {
     const userid = localStorage.getItem('userId');
 
 
-    this.http.get<any>(AppModule.AdminApi+'/api/user/admin/' + userid)
+    this.http.get<any>(AppModule.AdminApi+'/api/auth/admin/' + userid)
       .subscribe(data => {
         this.users = data?.$values ? data.$values.map((user: any): IUser => ({
           userName: user.userName || "",
@@ -103,9 +103,7 @@ export class AdminComponent {
         console.log("Beep Boop Edit User Error: " + error.message)
       });
       this.usrId = 0;
-      this.usrIndex = null;
-      this.findUsers = false;
-      this.isEditingAConfig = false;
+      this.backToUserList();
     }
     else if (this.isEditingAConfig) {
       this.isEditingAConfig = false;
@@ -117,12 +115,11 @@ export class AdminComponent {
         console.log("Beep Boop Edit User Error: " + error)
       });
       this.usrId = 0;
-      this.usrIndex = null;
-      this.findUsers = false;
-      this.isEditingAUser = false;
+      this.backToUserList();
     }
     else {
       console.log("how did we end up here");
+      this.backToUserList();
     }
   }
 

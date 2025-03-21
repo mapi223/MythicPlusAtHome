@@ -103,6 +103,9 @@ namespace AdminApplication.Controllers
                 throw new KeyNotFoundException($"Configuration with ID {Config.ConfigurationId} not found.");
             }
 
+            var oldPlayers = existingConfig.Players.ToList();
+            _context.Players.RemoveRange(oldPlayers);
+
 
             existingConfig.UserId = UserId;
             existingConfig.ModifiedAt = DateTime.UtcNow;

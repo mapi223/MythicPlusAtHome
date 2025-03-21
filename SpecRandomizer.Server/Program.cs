@@ -15,6 +15,7 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
         options.JsonSerializerOptions.WriteIndented = true;
     });
+
 builder.Services.AddScoped<ConfigurationService>();
 builder.Services.AddScoped<GroupConfigurationService>();
 builder.Services.AddScoped<UserService>();

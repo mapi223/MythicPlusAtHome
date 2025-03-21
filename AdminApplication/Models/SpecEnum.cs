@@ -5,7 +5,7 @@ namespace AdminApplication.Models
 
 {
 
-    public enum Role
+    public enum PRole
     {
         TANK,
         HEALER,
@@ -32,79 +32,79 @@ namespace AdminApplication.Models
 
     public class Specialization
     {
-        public Specialization(ClassList Class, Role role, string name)
+        public Specialization(ClassList Class, PRole role, string name)
         {
             Special = Class;
             Role = role;
             Name = name;
         }
         public ClassList Special { get; set; }
-        public Role Role { get; set; }
+        public PRole Role { get; set; }
         public string Name { get; set; }
     }
 
     public static class ClassMappings
     {
         //defines the roles allowed Per ClassList
-        public static readonly Dictionary<ClassList, List<Role>> AllowedRoles = new()
+        public static readonly Dictionary<ClassList, List<PRole>> AllowedRoles = new()
         {
-            { ClassList.DEATH_KNIGHT, new List<Role> {Role.TANK, Role.DAMAGE } },
-            { ClassList.DEMON_HUNTER, new List<Role> {Role.TANK, Role.DAMAGE } },
-            { ClassList.DRUID, new List<Role> {Role.TANK, Role.HEALER, Role.DAMAGE } },
-            { ClassList.EVOKER, new List<Role> { Role.HEALER, Role.DAMAGE } },
-            { ClassList.HUNTER, new List<Role> { Role.DAMAGE } },
-            { ClassList.MAGE, new List<Role> {Role.DAMAGE } },
-            { ClassList.MONK, new List<Role> {Role.TANK, Role.HEALER, Role.DAMAGE } },
-            { ClassList.PALADIN, new List<Role> {Role.TANK, Role.HEALER, Role.DAMAGE } },
-            { ClassList.PRIEST, new List<Role> {Role.HEALER, Role.DAMAGE } },
-            { ClassList.ROGUE, new List<Role> {Role.DAMAGE } },
-            { ClassList.SHAMAN, new List<Role> {Role.HEALER, Role.DAMAGE } },
-            { ClassList.WARLOCK, new List<Role> {Role.DAMAGE } },
-            { ClassList.WARRIOR, new List<Role> {Role.TANK, Role.DAMAGE } }
+            { ClassList.DEATH_KNIGHT, new List<PRole> { PRole.TANK, PRole.DAMAGE } },
+            { ClassList.DEMON_HUNTER, new List<PRole> { PRole.TANK, PRole.DAMAGE } },
+            { ClassList.DRUID, new List<PRole> { PRole.TANK, PRole.HEALER, PRole.DAMAGE } },
+            { ClassList.EVOKER, new List<PRole> { PRole.HEALER, PRole.DAMAGE } },
+            { ClassList.HUNTER, new List<PRole> { PRole.DAMAGE } },
+            { ClassList.MAGE, new List<PRole> { PRole.DAMAGE } },
+            { ClassList.MONK, new List<PRole> { PRole.TANK, PRole.HEALER, PRole.DAMAGE } },
+            { ClassList.PALADIN, new List<PRole> { PRole.TANK, PRole.HEALER, PRole.DAMAGE } },
+            { ClassList.PRIEST, new List<PRole> { PRole.HEALER, PRole.DAMAGE } },
+            { ClassList.ROGUE, new List<PRole> { PRole.DAMAGE } },
+            { ClassList.SHAMAN, new List<PRole> { PRole.HEALER, PRole.DAMAGE } },
+            { ClassList.WARLOCK, new List<PRole> { PRole.DAMAGE } },
+            { ClassList.WARRIOR, new List<PRole> { PRole.TANK, PRole.DAMAGE } }
         };
 
-        public static readonly Dictionary<(ClassList, Role), List<Specialization>> Specializations = new()
+        public static readonly Dictionary<(ClassList, PRole), List<Specialization>> Specializations = new()
         {
-            { (ClassList.DEATH_KNIGHT, Role.TANK), new List <Specialization> {  new Specialization(ClassList.DEATH_KNIGHT, Role.TANK, "Blood Death Knight") } },
-            { (ClassList.DEATH_KNIGHT, Role.DAMAGE), new List <Specialization> {new Specialization(ClassList.DEATH_KNIGHT, Role.DAMAGE, "Frost Death Knight" ), 
-                                                                                new Specialization(ClassList.DEATH_KNIGHT, Role.DAMAGE, "Unholy Death Knight") } },
-            { (ClassList.DEMON_HUNTER, Role.TANK), new List <Specialization> {  new Specialization(ClassList.DEMON_HUNTER, Role.TANK, "Vengeance Demon Hunter") } },
-            { (ClassList.DEMON_HUNTER, Role.DAMAGE), new List <Specialization> {new Specialization(ClassList.DEMON_HUNTER, Role.DAMAGE, "Havoc Demon Hunter") } },
-            { (ClassList.DRUID, Role.TANK), new List <Specialization> {         new Specialization(ClassList.DRUID, Role.TANK, "Guardian Druid") } },
-            { (ClassList.DRUID, Role.HEALER),new List <Specialization> {        new Specialization(ClassList.DRUID, Role.HEALER, "Restoration Druid") } },
-            { (ClassList.DRUID, Role.DAMAGE), new List <Specialization> {       new Specialization(ClassList.DEATH_KNIGHT, Role.DAMAGE, "Feral Druid"), 
-                                                                                new Specialization(ClassList.DRUID, Role.DAMAGE, "Balance Druid") } },
-            { (ClassList.EVOKER, Role.HEALER), new List <Specialization>  {     new Specialization(ClassList.EVOKER, Role.HEALER, "Presevation Evoker") } },
-            { (ClassList.EVOKER, Role.DAMAGE),new List <Specialization>  {      new Specialization(ClassList.EVOKER, Role.HEALER, "Devestation Evoker"),
-                                                                                new Specialization(ClassList.EVOKER, Role.HEALER, "Augmentation Evoker") } },
-            { (ClassList.HUNTER, Role.DAMAGE), new List <Specialization> {      new Specialization(ClassList.HUNTER, Role.DAMAGE, "Beast Master Hunter"), 
-                                                                                new Specialization(ClassList.HUNTER, Role.DAMAGE, "Marksmenship Hunter"),
-                                                                                new Specialization(ClassList.HUNTER, Role.DAMAGE, "Survival Hunter") } },
-            { (ClassList.MAGE, Role.DAMAGE), new List <Specialization> {        new Specialization(ClassList.MAGE, Role.DAMAGE, "Fire Mage"), 
-                                                                                new Specialization(ClassList.MAGE, Role.DAMAGE, "Frost Mage"),   
-                                                                                new Specialization(ClassList.MAGE, Role.DAMAGE, "Arcane Mage") } },
-            { (ClassList.MONK, Role.TANK), new List <Specialization> {          new Specialization(ClassList.MONK, Role.TANK, "Brewmaster Monk") } },
-            { (ClassList.MONK, Role.HEALER),new List <Specialization> {         new Specialization(ClassList.MONK, Role.HEALER, "Mistweaver Monk") } },
-            { (ClassList.MONK, Role.DAMAGE), new List <Specialization> {        new Specialization(ClassList.MONK, Role.DAMAGE, "Windwalker Monk") } },
-            { (ClassList.PRIEST, Role.HEALER), new List <Specialization>  {     new Specialization(ClassList.PRIEST, Role.HEALER, "Holy Priest") , 
-                                                                                new Specialization(ClassList.PRIEST, Role.HEALER, "Disc Priest") } },
-            { (ClassList.PRIEST, Role.DAMAGE),new List <Specialization>  {      new Specialization(ClassList.PRIEST, Role.DAMAGE, "Shadow Priest") } },
-            { (ClassList.PALADIN, Role.TANK), new List <Specialization> {       new Specialization(ClassList.PALADIN, Role.TANK, "Protection Paladin") } },
-            { (ClassList.PALADIN, Role.HEALER),new List <Specialization>  {     new Specialization(ClassList.PALADIN, Role.HEALER, "Holy Paladin") } },
-            { (ClassList.PALADIN, Role.DAMAGE),new List <Specialization> {      new Specialization(ClassList.PALADIN, Role.DAMAGE, "Retribution Paladin") } },
-            { (ClassList.ROGUE, Role.DAMAGE), new List <Specialization> {       new Specialization(ClassList.ROGUE, Role.DAMAGE, "Assassination Rogue"), 
-                                                                                new Specialization(ClassList.ROGUE, Role.DAMAGE, "Outlaw Rogue"), 
-                                                                                new Specialization(ClassList.ROGUE, Role.DAMAGE, "Subtlety Rogue") } },
-            { (ClassList.SHAMAN, Role.HEALER), new List <Specialization>  {     new Specialization(ClassList.SHAMAN, Role.HEALER, "Restoration Shaman") } },
-            { (ClassList.SHAMAN, Role.DAMAGE),new List <Specialization>  {      new Specialization(ClassList.SHAMAN, Role.DAMAGE, "Elemental Shaman"), 
-                                                                                new Specialization(ClassList.SHAMAN, Role.DAMAGE, "Enhancement Shaman") } },
-            { (ClassList.WARLOCK, Role.DAMAGE), new List <Specialization> {     new Specialization(ClassList.WARLOCK, Role.DAMAGE, "Affliction Warlock"),
-                                                                                new Specialization(ClassList.WARLOCK, Role.DAMAGE, "Demonology Warlock"), 
-                                                                                new Specialization(ClassList.WARLOCK, Role.DAMAGE, "Destruction Warlock") } },
-            { (ClassList.WARRIOR, Role.TANK), new List <Specialization> {       new Specialization(ClassList.WARRIOR, Role.TANK, "Protection Warrior") } },
-            { (ClassList.WARRIOR, Role.DAMAGE), new List <Specialization> {     new Specialization(ClassList.WARRIOR, Role.DAMAGE, "Arms Warrior"),
-                                                                                new Specialization(ClassList.WARRIOR, Role.DAMAGE, "Fury Warrior") } },
-            { (ClassList.NONE, Role.INVALID), new List <Specialization> {       new Specialization(ClassList.NONE, Role.INVALID, "Some Weirdness happening") } }
+            { (ClassList.DEATH_KNIGHT, PRole.TANK), new List <Specialization> {  new Specialization(ClassList.DEATH_KNIGHT, PRole.TANK, "Blood Death Knight") } },
+            { (ClassList.DEATH_KNIGHT, PRole.DAMAGE), new List <Specialization> {new Specialization(ClassList.DEATH_KNIGHT, PRole.DAMAGE, "Frost Death Knight" ), 
+                                                                                new Specialization(ClassList.DEATH_KNIGHT, PRole.DAMAGE, "Unholy Death Knight") } },
+            { (ClassList.DEMON_HUNTER, PRole.TANK), new List <Specialization> {  new Specialization(ClassList.DEMON_HUNTER, PRole.TANK, "Vengeance Demon Hunter") } },
+            { (ClassList.DEMON_HUNTER, PRole.DAMAGE), new List <Specialization> {new Specialization(ClassList.DEMON_HUNTER, PRole.DAMAGE, "Havoc Demon Hunter") } },
+            { (ClassList.DRUID, PRole.TANK), new List <Specialization> {         new Specialization(ClassList.DRUID, PRole.TANK, "Guardian Druid") } },
+            { (ClassList.DRUID, PRole.HEALER),new List <Specialization> {        new Specialization(ClassList.DRUID, PRole.HEALER, "Restoration Druid") } },
+            { (ClassList.DRUID, PRole.DAMAGE), new List <Specialization> {       new Specialization(ClassList.DEATH_KNIGHT, PRole.DAMAGE, "Feral Druid"), 
+                                                                                new Specialization(ClassList.DRUID, PRole.DAMAGE, "Balance Druid") } },
+            { (ClassList.EVOKER, PRole.HEALER), new List <Specialization>  {     new Specialization(ClassList.EVOKER, PRole.HEALER, "Presevation Evoker") } },
+            { (ClassList.EVOKER, PRole.DAMAGE),new List <Specialization>  {      new Specialization(ClassList.EVOKER, PRole.HEALER, "Devestation Evoker"),
+                                                                                new Specialization(ClassList.EVOKER, PRole.HEALER, "Augmentation Evoker") } },
+            { (ClassList.HUNTER, PRole.DAMAGE), new List <Specialization> {      new Specialization(ClassList.HUNTER, PRole.DAMAGE, "Beast Master Hunter"), 
+                                                                                new Specialization(ClassList.HUNTER, PRole.DAMAGE, "Marksmenship Hunter"),
+                                                                                new Specialization(ClassList.HUNTER, PRole.DAMAGE, "Survival Hunter") } },
+            { (ClassList.MAGE, PRole.DAMAGE), new List <Specialization> {        new Specialization(ClassList.MAGE, PRole.DAMAGE, "Fire Mage"), 
+                                                                                new Specialization(ClassList.MAGE, PRole.DAMAGE, "Frost Mage"),   
+                                                                                new Specialization(ClassList.MAGE, PRole.DAMAGE, "Arcane Mage") } },
+            { (ClassList.MONK, PRole.TANK), new List <Specialization> {          new Specialization(ClassList.MONK, PRole.TANK, "Brewmaster Monk") } },
+            { (ClassList.MONK, PRole.HEALER),new List <Specialization> {         new Specialization(ClassList.MONK, PRole.HEALER, "Mistweaver Monk") } },
+            { (ClassList.MONK, PRole.DAMAGE), new List <Specialization> {        new Specialization(ClassList.MONK, PRole.DAMAGE, "Windwalker Monk") } },
+            { (ClassList.PRIEST, PRole.HEALER), new List <Specialization>  {     new Specialization(ClassList.PRIEST, PRole.HEALER, "Holy Priest") , 
+                                                                                new Specialization(ClassList.PRIEST, PRole.HEALER, "Disc Priest") } },
+            { (ClassList.PRIEST, PRole.DAMAGE),new List <Specialization>  {      new Specialization(ClassList.PRIEST, PRole.DAMAGE, "Shadow Priest") } },
+            { (ClassList.PALADIN, PRole.TANK), new List <Specialization> {       new Specialization(ClassList.PALADIN, PRole.TANK, "Protection Paladin") } },
+            { (ClassList.PALADIN, PRole.HEALER),new List <Specialization>  {     new Specialization(ClassList.PALADIN, PRole.HEALER, "Holy Paladin") } },
+            { (ClassList.PALADIN, PRole.DAMAGE),new List <Specialization> {      new Specialization(ClassList.PALADIN, PRole.DAMAGE, "Retribution Paladin") } },
+            { (ClassList.ROGUE, PRole.DAMAGE), new List <Specialization> {       new Specialization(ClassList.ROGUE, PRole.DAMAGE, "Assassination Rogue"), 
+                                                                                new Specialization(ClassList.ROGUE, PRole.DAMAGE, "Outlaw Rogue"), 
+                                                                                new Specialization(ClassList.ROGUE, PRole.DAMAGE, "Subtlety Rogue") } },
+            { (ClassList.SHAMAN, PRole.HEALER), new List <Specialization>  {     new Specialization(ClassList.SHAMAN, PRole.HEALER, "Restoration Shaman") } },
+            { (ClassList.SHAMAN, PRole.DAMAGE),new List <Specialization>  {      new Specialization(ClassList.SHAMAN, PRole.DAMAGE, "Elemental Shaman"), 
+                                                                                new Specialization(ClassList.SHAMAN, PRole.DAMAGE, "Enhancement Shaman") } },
+            { (ClassList.WARLOCK, PRole.DAMAGE), new List <Specialization> {     new Specialization(ClassList.WARLOCK, PRole.DAMAGE, "Affliction Warlock"),
+                                                                                new Specialization(ClassList.WARLOCK, PRole.DAMAGE, "Demonology Warlock"), 
+                                                                                new Specialization(ClassList.WARLOCK, PRole.DAMAGE, "Destruction Warlock") } },
+            { (ClassList.WARRIOR, PRole.TANK), new List <Specialization> {       new Specialization(ClassList.WARRIOR, PRole.TANK, "Protection Warrior") } },
+            { (ClassList.WARRIOR, PRole.DAMAGE), new List <Specialization> {     new Specialization(ClassList.WARRIOR, PRole.DAMAGE, "Arms Warrior"),
+                                                                                new Specialization(ClassList.WARRIOR, PRole.DAMAGE, "Fury Warrior") } },
+            { (ClassList.NONE, PRole.INVALID), new List <Specialization> {       new Specialization(ClassList.NONE, PRole.INVALID, "Some Weirdness happening") } }
 
         };
     }

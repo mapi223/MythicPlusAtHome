@@ -1,6 +1,4 @@
-﻿using SpecRandomizer.Server.Models;
-
-namespace ConfigurtionService.Models
+﻿namespace ConfigurtionService.Models
 {
     public class ConfigurationRepository: IConfigurationRepository
     {
