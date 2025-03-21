@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { IClassDetails } from './classDetails';
 import { CLASSLIST } from './mock-list';
 
@@ -12,66 +12,79 @@ import { CLASSLIST } from './mock-list';
 export class ClassListComponent {
   @Input() isLoading = false;
   classes = CLASSLIST;
-  selectedClass?: IClassDetails;
   selectedClasses: IClassDetails[] = [];
-  activeIndex: number | null = null;
-  private cycleInterval: any;
+  currentIndex: number | null = null; 
+  rouletteInterval: any = null; 
+  isCycling: boolean = false;
 
+  @Input() passedSelected: number[] = [];
   @Output() selectionOutput = new EventEmitter<IClassDetails[]>();
+
+  constructor(private cdr: ChangeDetectorRef) { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['isLoading']) {
       if (this.isLoading) {
-        this.startSlotMachineEffect();
+        this.rouletteStart();
       } else {
-        this.stopSlotMachineEffect();
+        this.rouletteStop();
       }
+    }
+  }
+
+  ngAfterViewInit() {
+    if (this.passedSelected && this.passedSelected.length) {
+      this.passedSelected.forEach(selectedId => {
+        const classDetails = this.classes.find(c => c.id === selectedId);
+        if (classDetails) {
+          this.onSelect(classDetails);
+        }
+      });
+      this.cdr.detectChanges();
     }
   }
 
   onSelect(classDetails: IClassDetails): void {
-    this.selectedClass = classDetails;
-    if (this.selectedClasses?.indexOf(classDetails) !== undefined) {
-      const foundClass: number = this.selectedClasses.indexOf(classDetails)
-      if (foundClass === -1) {
-        this.selectedClasses.push(classDetails);
-        this.selectionOutput.emit(this.selectedClasses);
-      }
-      else {
-        this.selectedClasses.splice(foundClass, 1);
-        this.selectionOutput.emit(this.selectedClasses);
-      }
+    const foundIndex = this.selectedClasses.findIndex(c => c.id === classDetails.id);
+
+    if (foundIndex === -1) {
+      this.selectedClasses.push(classDetails);
+    } else {
+      this.selectedClasses.splice(foundIndex, 1);
     }
-  }
-  isSelectedArray(classDetails: IClassDetails) {
-    if (this.selectedClasses?.indexOf(classDetails) !== undefined) {
-      if (this.selectedClasses?.indexOf(classDetails) >= 0) {
-        return true;
-      }
-      else
-        return false;
-    }
-    else
-      return false;
+
+    this.selectionOutput.emit([...this.selectedClasses]);
   }
 
-  startSlotMachineEffect() {
-    let index = 0;
-    let id = 0;
-    this.cycleInterval = setInterval(() => {
-      if (!this.isLoading || this.selectedClasses?.length === 0) {
-        this.stopSlotMachineEffect();
-        return;
-      }
-      this.activeIndex = id;
-      index = (index + 1) % this.selectedClasses?.length;
-      id = this.selectedClasses[index].id;
-    }, 500);
+  isSelected(classDetails: IClassDetails): boolean {
+    return this.selectedClasses.some(c => c.id === classDetails.id);
   }
 
-  stopSlotMachineEffect() {
-    clearInterval(this.cycleInterval);
-    this.activeIndex = null;
+  rouletteStart() {
+      if (this.rouletteInterval) {
+        clearInterval(this.rouletteInterval); 
+      }
+
+      let index = 0;
+    this.isCycling = true;
+    this.rouletteInterval = setInterval(() => {
+      this.currentIndex = this.classes.indexOf(this.selectedClasses[index]); 
+      index = (index + 1) % this.selectedClasses.length; 
+      }, 250); 
+    }
+
+
+  rouletteStop() {
+    if (this.rouletteInterval) {
+      clearInterval(this.rouletteInterval);
+      this.rouletteInterval = null;
+    }
+    this.currentIndex = null;
+    this.isCycling = false;
   }
 }
+
+
+
+
 

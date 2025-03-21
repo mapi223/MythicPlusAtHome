@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SpecRandomizer.Server.Model;
 
 namespace SpecRandomizer.Server.Models
@@ -13,9 +14,24 @@ namespace SpecRandomizer.Server.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Configuration> Configurations { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<UserRole>()
+                .HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            modelBuilder.Entity<UserRole>()
+               .HasOne(ur => ur.User)
+               .WithMany()
+               .HasForeignKey(ur => ur.UserId);
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(ur => ur.Role)
+                .WithMany()
+                .HasForeignKey(ur => ur.RoleId);
+
             modelBuilder.Entity<Configuration>()
                 .HasOne(c => c.User)
                 .WithMany(u => u.Configurations)
@@ -27,6 +43,11 @@ namespace SpecRandomizer.Server.Models
                 .WithMany(c => c.Players)
                 .HasForeignKey(p => p.ConfigurationId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Role>().HasData(
+                new Role { RoleId = 1, Name = "Admin" },
+                new Role { RoleId = 2, Name = "User" }
+   );
 
         }
     } 

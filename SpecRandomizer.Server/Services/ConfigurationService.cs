@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SpecRandomizer.Server.Models;
 using SpecRandomizer.Server.Model;
+using NuGet.Packaging;
 
 public class ConfigurationService
 {
@@ -16,12 +17,22 @@ public class ConfigurationService
     }
 
 
-    public async Task<List<Configuration>> GetAllConfigurationsByUserIdAsync(int UserId)
+    public async Task<List<ConfigurationDto>> GetAllConfigurationsByUserIdAsync(int UserId)
     {
         return await _context.Configurations
-            .Where(c => c.UserId == UserId)
-            .Include(c => c.Players)
-            .ToListAsync();
+    .Where(c => c.UserId == UserId)
+    .Include(c => c.Players)  // Ensure players are included
+    .Select(c => new ConfigurationDto
+    {
+        ConfigurationId = c.ConfigurationId,
+        Players = c.Players.Select(p => new PlayerDto  // Convert Players to a clean list
+        {
+            PlayerId = p.PlayerId,
+            PlayerName = p.PlayerName,
+            SpecList = p.SpecList
+        }).ToList()
+    })
+    .ToListAsync();
     }
 
     public async Task<Configuration?> GetConfigurationByIdAsync(int id)
@@ -50,10 +61,43 @@ public class ConfigurationService
         {
             _context.Configurations.Remove(userConfigs.First()); // Remove the oldest one
         }
-
+        config.ModifiedBy = config.User;
         _context.Configurations.Add(config);
         await _context.SaveChangesAsync();
         return config;
+    }
+
+    public async Task<Configuration> UpdateConfigurationAsync(Configuration updatedConfig, int userId, int id)
+    {
+        bool isAdmin = await IsUserAdminAsync(userId);
+        if (!isAdmin)
+        {
+            throw new UnauthorizedAccessException("Only admins can update configurations.");
+        }
+
+        var existingConfig = await _context.Configurations
+         .Include(c => c.Players)
+         .FirstOrDefaultAsync(c => c.ConfigurationId == id);
+
+        if (existingConfig == null)
+        {
+            throw new KeyNotFoundException($"Configuration with ID {id} not found.");
+        }
+
+        
+        existingConfig.UserId = updatedConfig.UserId;
+        existingConfig.ModifiedAt = DateTime.UtcNow;
+        existingConfig.ModifiedBy = await _context.Users.FirstOrDefaultAsync(u=> u.UserId == userId);
+
+        
+        if (updatedConfig.Players != null)
+        {
+            existingConfig.Players.Clear();
+            existingConfig.Players.AddRange(updatedConfig.Players);
+        }
+
+        await _context.SaveChangesAsync(); // Save changes to DB
+        return existingConfig;
     }
 
     public async Task<bool> DeleteConfigurationAsync(int id)
@@ -64,5 +108,11 @@ public class ConfigurationService
         _context.Configurations.Remove(config);
         await _context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<bool> IsUserAdminAsync(int userId)
+    {
+        return await _context.UserRoles
+            .AnyAsync(ur => ur.UserId == userId && ur.RoleId == 1);
     }
 }

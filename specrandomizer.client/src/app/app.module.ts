@@ -10,6 +10,9 @@ import { PlayerListComponent } from './player-list/player-list.component';
 import { PlayerComponent } from './player/player.component';
 import { SpecRouletteHeaderComponent } from './spec-roulette-header/spec-roulette-header.component';
 import { GroupConfigurationComponent } from './group-configuration/group-configuration.component';
+import { ConfigurationListComponent } from './configuration-list/configuration-list.component';
+import { LogInComponent } from './log-in/log-in.component';
+import { AdminComponent } from './admin/admin.component';
 
 
 @NgModule({
@@ -19,7 +22,10 @@ import { GroupConfigurationComponent } from './group-configuration/group-configu
     PlayerListComponent,
     PlayerComponent,
     SpecRouletteHeaderComponent,
-    GroupConfigurationComponent
+    GroupConfigurationComponent,
+    ConfigurationListComponent,
+    LogInComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,
@@ -30,4 +36,10 @@ import { GroupConfigurationComponent } from './group-configuration/group-configu
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+
+ static UserApi: String = 'https://localhost:7283';
+ static GroupApi: String = 'https://localhost:7234';
+ static ConfigApi: String = 'https://localhost:7006';
+ static AdminApi: String = 'https://localhost:7264';
+}

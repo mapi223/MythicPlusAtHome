@@ -17,7 +17,7 @@ namespace SpecRandomizer.Server.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "9.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -33,10 +33,18 @@ namespace SpecRandomizer.Server.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("ModifiedByUserId")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("ConfigurationId");
+
+                    b.HasIndex("ModifiedByUserId");
 
                     b.HasIndex("UserId");
 
@@ -58,7 +66,7 @@ namespace SpecRandomizer.Server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int[]>("SpecList")
+                    b.PrimitiveCollection<int[]>("SpecList")
                         .IsRequired()
                         .HasColumnType("integer[]");
 
@@ -77,9 +85,22 @@ namespace SpecRandomizer.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
 
-                    b.Property<string>("Password")
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("ModifiedByUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<byte[]>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("bytea");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("bytea");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -87,15 +108,77 @@ namespace SpecRandomizer.Server.Migrations
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("ModifiedByUserId");
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("SpecRandomizer.Server.Models.Role", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RoleId"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("RoleId");
+
+                    b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            RoleId = 2,
+                            Name = "User"
+                        });
+                });
+
+            modelBuilder.Entity("UserRole", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("RoleId1")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("UserId1")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("RoleId1");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("SpecRandomizer.Server.Model.Configuration", b =>
                 {
+                    b.HasOne("SpecRandomizer.Server.Model.User", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedByUserId");
+
                     b.HasOne("SpecRandomizer.Server.Model.User", "User")
                         .WithMany("Configurations")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("ModifiedBy");
 
                     b.Navigation("User");
                 });
@@ -110,6 +193,42 @@ namespace SpecRandomizer.Server.Migrations
                     b.Navigation("Configuration");
                 });
 
+            modelBuilder.Entity("SpecRandomizer.Server.Model.User", b =>
+                {
+                    b.HasOne("SpecRandomizer.Server.Model.User", "ModifiedBy")
+                        .WithMany()
+                        .HasForeignKey("ModifiedByUserId");
+
+                    b.Navigation("ModifiedBy");
+                });
+
+            modelBuilder.Entity("UserRole", b =>
+                {
+                    b.HasOne("SpecRandomizer.Server.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SpecRandomizer.Server.Models.Role", null)
+                        .WithMany("UserRole")
+                        .HasForeignKey("RoleId1");
+
+                    b.HasOne("SpecRandomizer.Server.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SpecRandomizer.Server.Model.User", null)
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SpecRandomizer.Server.Model.Configuration", b =>
                 {
                     b.Navigation("Players");
@@ -118,6 +237,13 @@ namespace SpecRandomizer.Server.Migrations
             modelBuilder.Entity("SpecRandomizer.Server.Model.User", b =>
                 {
                     b.Navigation("Configurations");
+
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("SpecRandomizer.Server.Models.Role", b =>
+                {
+                    b.Navigation("UserRole");
                 });
 #pragma warning restore 612, 618
         }

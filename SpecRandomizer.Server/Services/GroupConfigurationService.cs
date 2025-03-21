@@ -71,7 +71,7 @@ namespace SpecRandomizer.Server.Services
             var assignments = new List<RoleAssignment>();
             var availablePlayers = new List<Player>(config.Players);
 
-            if (availablePlayers.Count == 0) return AsDto(assignments);
+            if (availablePlayers.Count == 0) return RoleAssignmentDto.ConvertToDtoList(assignments);
 
             var rng = new Random();
             availablePlayers = [.. availablePlayers.OrderBy(_ => rng.Next())];
@@ -133,9 +133,7 @@ namespace SpecRandomizer.Server.Services
                     assignments.Add(new RoleAssignment(player, AssignSpecialization(player.SpecList, assignedRole)));
                 }
             }
-
-
-            return AsDto(assignments);
+            return RoleAssignmentDto.ConvertToDtoList(assignments);
         }
     }
 }

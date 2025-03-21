@@ -1,6 +1,5 @@
 <div class="AllThePeople">
-  
-  <span *ngFor="let player of players; let i = index; let last = last">
-    {{ i > 0 && last ? ', and ' : (i > 0 ? ', ' : '') }}{{players[i].playerName}} is a {{players[i].specName}}
-  </span>
+  <div *ngFor="let player of players">
+    <p>{{player.playerName}} is a {{player.specName}}</p>
+  </div>
 </div>

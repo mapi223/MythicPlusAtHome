@@ -15,8 +15,10 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
         options.JsonSerializerOptions.WriteIndented = true;
     });
+
 builder.Services.AddScoped<ConfigurationService>();
 builder.Services.AddScoped<GroupConfigurationService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddDbContext<SpecRandomizerDbContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("SpecRandomizerServerContext"));
 });
@@ -28,7 +30,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular",
         policy => {
-            policy.WithOrigins("http://localhost:63600", "https://localhost:63600") // Allow both HTTP and HTTPS
+            policy.WithOrigins("https://localhost:63600", "http://localhost:63600") // Allow both HTTP and HTTPS
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials(); 
@@ -44,7 +46,7 @@ builder.Services.Configure<JsonOptions>(options =>
 var app = builder.Build();
 
 app.UseCors("AllowAngular");
-
+app.UseRouting();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -59,8 +61,9 @@ app.UseHttpsRedirection();
 
 
 app.UseAuthorization();
-
 app.MapControllers();
+
+
 
 app.MapFallbackToFile("/index.html");
 
