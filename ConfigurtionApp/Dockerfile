@@ -17,7 +17,7 @@ RUN dotnet publish "./ConfigurtionService.csproj" -c $BUILD_CONFIGURATION -o /ap
 # Set up the final image with the .NET runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 8080
+EXPOSE 8081
 
 # Copy the published files from the build stage
 COPY --from=publish /app/publish ./
