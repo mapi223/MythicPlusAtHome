@@ -13,7 +13,7 @@ WORKDIR /src
 COPY GroupBuildingService.csproj ./
 
 # Restore dependencies for GroupBuildingService
-RUN dotnet restore "./GroupBuildingService/GroupBuildingService.csproj"
+RUN dotnet restore "./GroupBuildingService.csproj"
 
 # Copy the rest of the project files
 COPY . .
