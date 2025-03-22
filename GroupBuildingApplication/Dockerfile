@@ -11,7 +11,7 @@ EXPOSE 8085
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["GroupBuildingApplication/GroupBuildingService.csproj", "GroupBuildingApplication/"]
+COPY /GroupBuildingService.csproj ./
 RUN dotnet restore "./GroupBuildingApplication/GroupBuildingService.csproj"
 COPY . .
 WORKDIR "/src/GroupBuildingApplication"

@@ -11,7 +11,7 @@ EXPOSE 8083
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["ConfigurtionApp/ConfigurtionService.csproj", "ConfigurtionApp/"]
+COPY ConfigurtionService.csproj ./
 RUN dotnet restore "./ConfigurtionApp/ConfigurtionService.csproj"
 COPY . .
 WORKDIR "/src/ConfigurtionApp"

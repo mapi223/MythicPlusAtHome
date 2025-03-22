@@ -11,7 +11,7 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["AdminApplication/AdminApplication.csproj", "AdminApplication/"]
+COPY AdminApplication.csproj ./
 RUN dotnet restore "./AdminApplication/AdminApplication.csproj"
 COPY . .
 WORKDIR "/src/AdminApplication"
