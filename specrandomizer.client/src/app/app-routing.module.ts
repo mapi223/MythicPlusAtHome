@@ -12,10 +12,13 @@ const routes: Routes = [
   { path: 'login', component: LogInComponent, title: "SpecRoulette - User Log In Page" },
   { path: 'admin', component: AdminComponent, title: "SpecRoulette - Admin Page" },
   { path: '', redirectTo: "/roulette", pathMatch: 'full' }
+
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+
+}
