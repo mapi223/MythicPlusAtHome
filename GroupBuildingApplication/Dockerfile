@@ -10,7 +10,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Copy the GroupBuildingService.csproj to the working directory
-COPY GroupBuildingService/GroupBuildingService.csproj ./
+COPY GroupBuildingService.csproj ./
 
 # Restore dependencies for GroupBuildingService
 RUN dotnet restore "./GroupBuildingService/GroupBuildingService.csproj"

@@ -10,7 +10,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Copy the UserApplication.csproj to the working directory
-COPY UserApplication/UserApplication.csproj ./
+COPY UserApplication.csproj ./
 
 # Restore dependencies for UserApplication
 RUN dotnet restore "./UserApplication.csproj"
