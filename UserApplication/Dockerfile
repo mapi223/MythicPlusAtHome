@@ -13,7 +13,7 @@ WORKDIR /src
 COPY UserApplication/UserApplication.csproj ./UserApplication/
 
 # Restore dependencies for UserApplication
-RUN dotnet restore "./UserApplication/UserApplication.csproj"
+RUN dotnet restore "./UserApplication.csproj"
 
 # Copy the rest of the project files
 COPY . .

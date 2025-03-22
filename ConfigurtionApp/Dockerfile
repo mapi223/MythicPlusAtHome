@@ -4,15 +4,15 @@ WORKDIR /src
 
 # Copy the project files and restore dependencies
 COPY ConfigurationService/ConfigurationService.csproj ./ConfigurationService/
-RUN dotnet restore "./ConfigurationService/ConfigurationService.csproj"
+RUN dotnet restore "./ConfigurationService.csproj"
 
 # Copy the rest of the source code and build it
 COPY . . 
-RUN dotnet build "./ConfigurationService/ConfigurationService.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./ConfigurationService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Publish the app for production
 FROM build AS publish
-RUN dotnet publish "./ConfigurationService/ConfigurationService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./ConfigurationService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Set up the final image with the .NET runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
