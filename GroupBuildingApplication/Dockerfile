@@ -10,10 +10,10 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Copy the GroupBuildingService.csproj to the working directory
-COPY GroupBuildingService.csproj ./
+COPY GroupBuildingService/GroupBuildingService.csproj ./GroupBuildingService/
 
 # Restore dependencies for GroupBuildingService
-RUN dotnet restore "./GroupBuildingService.csproj"
+RUN dotnet restore "./GroupBuildingService/GroupBuildingService.csproj"
 
 # Copy the rest of the project files
 COPY . .
@@ -31,7 +31,7 @@ FROM base AS final
 WORKDIR /app
 
 # Copy the published files from the previous stage
-COPY --from=publish /app/publish ./
+COPY --from=publish /app/publish ./ 
 
 # Set the entry point for the container
 ENTRYPOINT ["dotnet", "GroupBuildingService.dll"]
