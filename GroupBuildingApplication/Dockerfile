@@ -1,29 +1,37 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
+# Use the .NET runtime image for the base layer
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8084
 EXPOSE 8085
 
-
-# This stage is used to build the service project
+# Use the .NET SDK image for the build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY /GroupBuildingService.csproj ./
-RUN dotnet restore "./GroupBuildingService.csproj"
+
+# Copy the GroupBuildingService.csproj to the working directory
+COPY GroupBuildingService/GroupBuildingService.csproj ./GroupBuildingService/
+
+# Restore dependencies for GroupBuildingService
+RUN dotnet restore "./GroupBuildingService/GroupBuildingService.csproj"
+
+# Copy the rest of the project files
 COPY . .
-WORKDIR "/src/GroupBuildingApplication"
+
+# Set the working directory to GroupBuildingService for build
+WORKDIR "/src/GroupBuildingService"
 RUN dotnet build "./GroupBuildingService.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
+# Publish the app
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./GroupBuildingService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+# Use the runtime image for the final stage
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+# Copy the published files from the previous stage
+COPY --from=publish /app/publish ./
+
+# Set the entry point for the container
 ENTRYPOINT ["dotnet", "GroupBuildingService.dll"]
