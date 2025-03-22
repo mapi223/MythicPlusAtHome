@@ -3,7 +3,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Copy the project files and restore dependencies
-COPY ConfigurationService.csproj ./
+COPY ConfigurtionService.csproj ./
 RUN dotnet restore "./ConfigurtionService.csproj"
 
 # Copy the rest of the source code and build it
